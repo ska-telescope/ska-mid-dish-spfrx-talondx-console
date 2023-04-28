@@ -1,0 +1,61 @@
+15:29:10 From Aditya Joshi To Everyone:
+	So our fqdn is
+15:29:25 From Aditya Joshi To Everyone:
+	device/name/alias
+15:29:51 From Aditya Joshi To Everyone:
+	so for you it might not be necessary if you only have 1 device
+15:30:48 From Aditya Joshi To Everyone:
+	so in Jive
+15:30:54 From Aditya Joshi To Everyone:
+	this is our database structure
+15:30:55 From Aditya Joshi To Everyone:
+	server
+		instance
+			class
+				device/name/alias
+15:31:16 From Aditya Joshi To Everyone:
+	exactly
+15:31:30 From Aditya Joshi To Everyone:
+	1 instance for 1 talon board
+15:31:42 From Aditya Joshi To Everyone:
+	so id is tagged on to the end of alias
+15:31:50 From Aditya Joshi To Everyone:
+	alias-<id>
+15:32:55 From Aditya Joshi To Everyone:
+	I mean I can just run the file with the config-db command
+15:33:00 From Aditya Joshi To Everyone:
+	and see if it populates the database
+15:33:28 From Aditya Joshi To Everyone:
+	yea
+15:33:31 From Aditya Joshi To Everyone:
+	and 1 more thing
+15:33:39 From Aditya Joshi To Everyone:
+	that <device> placeholder
+15:33:48 From Aditya Joshi To Everyone:
+	is where the whole python script comes in
+15:33:58 From Aditya Joshi To Everyone:
+	it converts the boardmap into a jason
+15:34:07 From Aditya Joshi To Everyone:
+	because it tell it talon boards = 1,2,3
+15:34:31 From Aditya Joshi To Everyone:
+	and it makes 3x of that json object each with talon-001, talon-002, talon-003
+15:34:50 From Aditya Joshi To Everyone:
+	yea
+15:34:56 From Aditya Joshi To Everyone:
+	but in your case you might not need a template because it's only 1 dish/1 board
+15:35:18 From Aditya Joshi To Everyone:
+	yea
+15:35:26 From Aditya Joshi To Everyone:
+	so the the midcbf_deployer script has 3 commands
+15:35:42 From Aditya Joshi To Everyone:
+	generate-talondx-config, download-artifacts, and config-db
+15:35:47 From Aditya Joshi To Everyone:
+	you don't need the first one
+15:36:00 From Aditya Joshi To Everyone:
+	and can just assume you have a static json for #2, #3
+15:36:06 From Aditya Joshi To Everyone:
+	Cool
+15:36:29 From Aditya Joshi To Everyone:
+	Alright I have another meeting
+15:36:30 From Aditya Joshi To Everyone:
+	Cya
