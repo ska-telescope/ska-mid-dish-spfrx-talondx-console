@@ -1,0 +1,66 @@
+# GitLab CI in conjunction with GitLab Runner can use Docker Engine
+# to test and build any application.
+# Docker, when used with GitLab CI, runs each job in a separate and
+# isolated container using the predefined image that is set up in
+# .gitlab-ci.yml.
+# In this case we use the latest python docker image to build and test
+# this project.
+# We store the artefact.skao.int/ska-k8s-tools/docker-builder:x.x.x as 
+# a group level variable for convenience
+image: $SKA_K8S_TOOLS_DOCKER_BUILDER_IMAGE
+
+# cache is used to specify a list of files and directories which should
+# be cached between jobs. You can only use paths that are within the
+# project workspace.
+# If cache is defined outside the scope of jobs, it means it is set
+# globally and all jobs will use that definition
+cache:
+  paths:
+    - build
+
+# The YAML file defines a set of jobs with constraints stating when they
+# should be run.
+# You can specify an unlimited number of jobs which are defined as
+# top-level elements with an arbitrary name and always have to contain at
+# least the script clause.
+# In this case we have only the test job which produce an artifacts (it
+# must be placed into a directory called "public")
+# It is also specified that only the master branch will be subject of this job.
+
+stages:
+  - build
+  - lint
+#  - test
+  - publish
+  - scan
+  - pages
+
+# Standardised included jobs
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+    
+include:
+  # # OCI images build and publish 
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/oci-image.gitlab-ci.yml'
+
+  # We don't need python build and publish
+  # as we are not releasing a python artefact
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/python-lint.gitlab-ci.yml'
+
+  # Docs pages
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/docs-pages.gitlab-ci.yml'
+
+  # Create Gitlab CI badges from CI metrics
+  # https://developer.skatelescope.org/en/latest/tools/continuousintegration.html#automated-collection-of-ci-health-metrics-as-part-of-the-ci-pipeline
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
+
+ # Create release
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/release.gitlab-ci.yml'
+
+  
+

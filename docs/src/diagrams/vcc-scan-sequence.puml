@@ -1,0 +1,51 @@
+@startuml test
+   skinparam backgroundColor #EEEBDC
+   skinparam sequence {
+      ParticipantBorderColor DodgerBlue
+      ParticipantBackgroundColor DeepSkyBlue
+      ActorBorderColor DarkGreen
+      ActorBackgroundColor Green
+      BoxBorderColor LightBlue
+      BoxBackgroundColor #F0FFFF
+   }
+
+   actor "User" as User
+
+   box "MCS\n(minikube)"
+      participant "CBF\nSubarray" as CbfSub
+      participant "Vcc"
+   end box
+
+   box "Talon DX"
+      participant "DsVccController" as VccCntr
+      participant "DsVccBand1And2" as VccB12
+      participant "FPGA" as FPGA
+      collections "Low-Level Tango\nDevices" as TangoDS
+   end box
+
+   User -> CbfSub: ** ConfigureScan(config_json) **
+   CbfSub -> Vcc: ** ConfigureBand("1") **
+   Vcc -> VccCntr: ** ConfigureBand("1") **
+   VccCntr -> FPGA: // program bitstream band 1 //
+   VccCntr -> VccB12: ** On() **
+   VccB12 -> VccCntr: success
+   VccCntr -> Vcc: success
+   Vcc -> CbfSub: success
+
+   CbfSub -> Vcc: ** ConfigureScan(config_json) **
+   Vcc -> VccB12: ** SetInternalParameters(param_json) **
+   VccB12 -> TangoDS: // set relevant attributes //
+   VccB12 -> Vcc: success
+   Vcc -> VccB12: ** ConfigureScan(config_json) **
+   VccB12 -> TangoDS: // propagate parameters //
+   VccB12 -> Vcc: success
+   Vcc -> CbfSub: success
+   CbfSub -> User: success
+
+   User -> CbfSub: ** Scan(scan_id) **
+   CbfSub -> Vcc: ** Scan(scan_id) **
+   Vcc -> VccB12: ** Scan(scan_id) **
+   VccB12 -> Vcc: scan started successfully
+   Vcc -> CbfSub: scan started successfully
+   CbfSub -> User: scan started successfully
+@enduml

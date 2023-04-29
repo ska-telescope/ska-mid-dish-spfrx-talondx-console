@@ -2,8 +2,8 @@ FROM artefact.skao.int/ska-tango-images-pytango-builder:9.3.33 as buildenv
 FROM artefact.skao.int/ska-tango-images-pytango-runtime:9.3.20
 
 LABEL \
-      author="D A Del Rizzo <Dave.DelRizzo@nrc-cnrc.gc.ca" \
-      description="Mid DISH SPFRx Talon-DX Console Deployer."
+      author="Dave Del Rizzo <Dave.DelRizzo@nrc-cnrc.gc.ca>" \
+      description="Mid DISH SPFRx Talon-DX Console Plotter."
 
 ## For tango user, but get access denied when trying to download artifacts via conan
 # RUN python -m pip install -r requirements.txt
@@ -17,9 +17,9 @@ LABEL \
 # we need to set the default directory to be used at
 # container launch time to avoid having to access
 # scripts through the directories each time
-WORKDIR /app/images/ska-mid-dish-spfrx-talondx-console-deployer/
+WORKDIR /app/images/ska-mid-dish-spfrx-talondx-console-plotter/
 
-RUN mkdir -p /app/images/ska-mid-dish-spfrx-talondx-console-deployer/artifacts
+RUN mkdir -p /app/images/ska-mid-dish-spfrx-talondx-console-plotter/artifacts
 USER root
 
 # TODO: temporary; uncomment following lines to fix pip ssl verification issue
@@ -44,8 +44,5 @@ RUN poetry export --format requirements.txt --output poetry-requirements.txt --w
     pip install -r poetry-requirements.txt && \
     rm poetry-requirements.txt
 
-COPY /images/ska-mid-dish-spfrx-talondx-console-deployer/conan_local/remotes.json /root/.conan/remotes.json
+COPY /images/ska-mid-dish-spfrx-talondx-console-plotter/conan_local/remotes.json /root/.conan/remotes.json
 RUN conan remote list
-
-CMD ./spfrx-deployer.py
-

@@ -4,9 +4,12 @@ import subprocess
 
 class ConanWrapper:
     """
-    ConanWrapper provides a Python interface to the shell commands required to download Conan packages.
-    There is a Python API, but it is not documented, and according to: https://github.com/conan-io/conan/issues/6315
-    ``The python api is not documented nor stable. It might change at any time and break your scripts.``
+    ConanWrapper provides a Python interface to the shell commands required
+    to download Conan packages.
+    There is a Python API, but it is not documented, and according to:
+    https://github.com/conan-io/conan/issues/6315
+    ``The python api is not documented nor stable. It might change at any time
+    and break your scripts.``
     This class can be updated to use the Python API if/when that makes sense.
 
     :param folder: destination path for downloaded (deployed) conan packages.
@@ -43,7 +46,8 @@ class ConanWrapper:
         self, pkg_name, version, user, channel, profile, timeout=60
     ):
         """
-        Run conan install to download the conan package and deploy it to the folder specified at construction.
+        Run conan install to download the conan package and deploy it to the
+        folder specified at construction.
 
         :param pkg_name: conan package name
         :type pkg_name: string
@@ -53,14 +57,16 @@ class ConanWrapper:
         :type user: string
         :param channel: conan package channel name
         :type channel: string
-        :param profile: name of text file containing the conan profile used to deploy the download package
+        :param profile: name of text file containing the conan profile used to
+                        deploy the download package
         :type profile: string
         :param timeout: download timeout in seconds
         :type timeout: int
         """
         try:
             subprocess.run(
-                f"conan install -if {self._folder} {pkg_name}/{version}@{user}/{channel} -g deploy -pr {profile}",
+                f"conan install -if {self._folder} {pkg_name}/{version}@"
+                f"{user}/{channel} -g deploy -pr {profile}",
                 timeout=timeout,
                 shell=True,
             )

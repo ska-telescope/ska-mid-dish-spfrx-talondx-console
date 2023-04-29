@@ -170,19 +170,19 @@ config-db: config-tango-dns copy-artifacts-pod ## Configure the database
 	--network host \
 	--env TANGO_HOST=$(MCS_TANGO_HOST) \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deployer/artifacts:rw \
-	$(ADD_HOSTS) $(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx_deployer.py --config-db
+	$(ADD_HOSTS) $(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx-deployer.py --config-db
 
 generate-spfrx-config:
 	@docker run --rm \
 	--network host \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deployer/artifacts:rw \
-	$(ADD_HOSTS) $(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx_deployer.py --generate-spfrx-config
+	$(ADD_HOSTS) $(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx-deployer.py --generate-spfrx-config
 
 download-artifacts:  ## Download artifacts from CAR and copy the on command sequence script
 	mkdir -p $(SPFRX_LOCAL_DIR)
 	@docker run --rm \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deployer/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx_deployer.py --download-artifacts
+	$(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx-deployer.py --download-artifacts
 
 ds-override-local:
 	python3 ds_local_build.py ds_local_build.json $(ds_list) $(ds_basedir) $(mcs_dir)
@@ -197,14 +197,14 @@ write-board-status: config-tango-dns status-datetime-dir
 	--env "TANGO_HOST=$(MCS_TANGO_HOST)" \
 	--env "TALONDX_STATUS_OUTPUT_DIR=/app/talon-board-status" \
 	--volume $(FINAL_DIR):/app/images/$(strip $(OCI_IMAGE))/talon-board-status:rw \
-	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./talondx.py --write-board-status
+	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --write-board-status
 
 talon-version: config-tango-dns
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(MCS_TANGO_HOST)" \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
-	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./talondx.py --talon-version
+	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-version
 
 talon-status: config-tango-dns
 	@docker run --rm \
@@ -212,13 +212,13 @@ talon-status: config-tango-dns
 	--env "TANGO_HOST=$(MCS_TANGO_HOST)" \
 	--env TERM=xterm \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
-	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./talondx.py --talon-status
+	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-status
 
-mcs-on: config-tango-dns
-	@docker run --rm \
-	--network host \
-	--env TANGO_HOST=$(MCS_TANGO_HOST) \
-	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./talondx.py --mcs-on
+#mcs-on: config-tango-dns
+#	@docker run --rm \
+#	--network host \
+#	--env TANGO_HOST=$(MCS_TANGO_HOST) \
+#	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./talondx.py --mcs-on
 
 documentation:  ## Re-generate documentation
 	cd docs && make clean && make html

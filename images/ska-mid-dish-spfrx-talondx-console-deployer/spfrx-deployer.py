@@ -15,7 +15,7 @@ from conan_local.conan_wrapper import ConanWrapper
 from nrcdbpopulate.dbPopulate import DbPopulate
 from spfrx_config.talondx_config import TalonDxConfig
 
-LOG_FORMAT = "[spfrx_deployer.py: line %(lineno)s]%(levelname)s: %(message)s"
+LOG_FORMAT = "[spfrx-deployer.py: line %(lineno)s]%(levelname)s: %(message)s"
 
 
 class bcolors:
@@ -232,7 +232,7 @@ def download_ds_binaries(ds_binaries, clear_conan_cache=True):
             git_info = ds.get("git")
             url = (
                 f'{GITLAB_PROJECTS_URL}{git_info["git_project_id"]}'
-                f'/jobs/artifacts/'
+                f"/jobs/artifacts/"
                 f'{git_info["git_branch"]}/download?job='
                 f'{git_info["git_pipeline_job"]}'
             )
@@ -249,10 +249,11 @@ def download_ds_binaries(ds_binaries, clear_conan_cache=True):
 
 if __name__ == "__main__":
     logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
-    logger_ = logging.getLogger("spfrx_deployer.py")
+    logger_ = logging.getLogger("spfrx-deployer.py")
     logger_.info(f"User: {getpass.getuser()}")
     parser = argparse.ArgumentParser(
-        description="MID DISH SPFRx Talon-DX Deployer Utility")
+        description="MID DISH SPFRx Talon-DX Deployer Utility"
+    )
     parser.add_argument(
         "-v",
         "--verbose",
@@ -262,7 +263,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config-db",
         help=f"configure the Tango database with devices specified"
-             f" in {BOARDMAP_FILE} file",
+        f" in {BOARDMAP_FILE} file",
         action="store_true",
     )
     parser.add_argument(
@@ -279,7 +280,7 @@ if __name__ == "__main__":
 
     if args.config_db:
         logger_.info(
-            f'Configure DB - TANGO_HOST = '
+            f"Configure DB - TANGO_HOST = "
             f'{tango.ApiUtil.get_env_var("TANGO_HOST")}'
         )
         config = TalonDxConfig(config_file=SPFRX_CONFIG_FILE)
@@ -289,7 +290,6 @@ if __name__ == "__main__":
         config = TalonDxConfig(config_file=SPFRX_CONFIG_FILE)
         config.export_config(ARTIFACTS_DIR)
         download_ds_binaries(config.ds_binaries())
-        # download_fpga_bitstreams(config.fpga_bitstreams())
     elif args.generate_spfrx_config:
         logger_.info("Generate spfrx-config.json file")
         generate_spfrx_config()

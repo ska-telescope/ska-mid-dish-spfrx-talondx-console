@@ -46,6 +46,3 @@ RUN poetry export --format requirements.txt --output poetry-requirements.txt --w
 
 COPY /images/ska-mid-dish-spfrx-talondx-console/conan_local/remotes.json /root/.conan/remotes.json
 RUN conan remote list
-
-CMD ./talondx.py
-

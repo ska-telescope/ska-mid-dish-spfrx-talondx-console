@@ -1,0 +1,43 @@
+@startuml test
+   skinparam backgroundColor #EEEBDC
+   skinparam sequence {
+   ParticipantBorderColor DodgerBlue
+   ParticipantBackgroundColor DeepSkyBlue
+   ActorBorderColor DarkGreen
+   ActorBackgroundColor Green
+   BoxBorderColor LightBlue
+   BoxBackgroundColor #F0FFFF
+   }
+   actor "User" as User
+   participant "Engineering\nConsole" as Eng
+
+   box "MCS\n(minikube)"
+   participant "CBF\nController" as CbfCtrl
+   participant "Talon\nLRU" as LRU
+   participant "Power\nSwitch" as PwrSwitch
+   database "Tango\nDB" as DB
+   end box
+
+   box "Talon DX"
+   participant "OS" as OS
+   participant "HPS\nMaster" as HPS
+   participant "FPGA" as FPGA
+   collections "Tango\nDevices" as TangoDS
+   end box
+
+   User -> Eng: **download-artifacts**
+   Eng -> CbfCtrl: //copy artefacts//
+   User -> Eng: **config-db**
+   Eng ->   DB: //add HPS Tango devices//
+   User -> CbfCtrl: **On()**
+   CbfCtrl -> LRU:
+   LRU -> PwrSwitch:
+   PwrSwitch -> LRU:
+   CbfCtrl -> OS: //copy artefacts//
+   CbfCtrl -> HPS ** : start
+   CbfCtrl -> HPS ++ : **configure**
+   HPS -> FPGA: program bitstream
+   HPS -> TangoDS ** : start
+   TangoDS -> HPS: running
+   HPS -> CbfCtrl -- : success
+@enduml

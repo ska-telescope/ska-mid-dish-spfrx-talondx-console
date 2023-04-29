@@ -1,4 +1,4 @@
-# SKA Mid Dish SPFRx Talon-DX Console
+# SKA Mid Dish SPFRx Talon-DX
 
 Code repository: [ska-mid-dish-spfrx-talondx-console](https://gitlab.com/ska-telescope/ska-mid-dish-spfrx-talondx-console)
 
@@ -13,6 +13,15 @@ git clone https://gitlab.com/ska-telescope/ska-mid-dish-spfrx-talondx-console
 cd ska-mid-dish-spfrx-talondx-console
 git submodule init
 git submodule update
+poetry install # to create the virtual environment with all dependencies
+poetry shell # to run shell in the virtual environment
+make oci-build # or "poetry run make oci-build" if not in the poetry shell
+make run    # runs "hello world" test
+```
+
+*Note: one may also build a specific container - useful during development*
+```
+make oci-build --env OCI_IMAGE=<name of container image path>
 ```
 
 ## Usage
@@ -36,8 +45,10 @@ apt-get -y install vim nano
 ### Generate SPFRx Talon-DX Config FIle
 To auto-generate the SPFRx Talon-DX config file based on the board configuration. Run the following command:
 ```bash
-make generate-spfrx-talondx-config
+make generate-spfrx-config
 ```
+This will write a new spfrx-config.json file into the local /mnt/spfrx-config folder.
+
 
 ### Download Artefacts from CAR
 To download Talon Tango device binaries from CAR to the local folder specified in the Makefile (`SPFRX_TALONDX_DEST_DIR`): 
@@ -52,6 +63,8 @@ A different config JSON can be specified if it exists as well (default value in 
 ```bash
 make download-artifacts
 ```
+This will by default write artifacts into the local /mnt/spfrx-config folder.
+
 
 ### Optional: Override DS Artefacts with local build
 In order for this script to work, ensure to clone and build your device servers in the same root directory:
@@ -74,6 +87,7 @@ make config-db
 This command adds the SPFRx Talon-DX device servers as specified in the `spfrx_boardmap.json` file.
 
 
+
 ### Pull and run the Docker from CAR
 ```bash
 docker pull artefact.skao.int/ska-mid-dish-spfrx-talondx-console:0.0.1
@@ -93,7 +107,7 @@ To see the generated documentation, open `/ska-mid-dish-spfrx-talondx-console/do
 firefox docs/build/html/index.html &
 ```
 
-
+---
 
 
 

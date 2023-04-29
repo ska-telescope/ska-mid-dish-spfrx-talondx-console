@@ -1,7 +1,8 @@
 """
 dbPopulate
-A python module intended to allow a TANGO developer to create, modify and destroy instances
-of Devices and Device Servers within a TANGO Database for prototyping and testing purposes.
+A python module intended to allow a TANGO developer to create, modify and
+destroy instances of Devices and Device Servers within a TANGO Database for
+prototyping and testing purposes.
 
 Created on Oct. 30, 2019
 Modified Sept 29, 2020
@@ -16,8 +17,9 @@ from tango import Database, DbDevInfo
 
 
 class DbPopulate:
-    # id is the unique ID for a given Talon-DX board. This string becomes a component of the
-    # unique TANGO identifier for all devices added to the database.
+    # id is the unique ID for a given Talon-DX board. This string becomes
+    # a component of the unique TANGO identifier for all devices added to
+    # the database.
     id = ""
 
     # dbHost is a string containing the IP address of the TANGO DB to use
@@ -34,8 +36,8 @@ class DbPopulate:
         # Store the input JSON file as a dict
         self.json = json
 
-        # determine whether we have a default TANGO DB specified in the environment variables.
-        # If not specified, exit.
+        # determine whether we have a default TANGO DB specified in the
+        # environment variables. If not specified, exit.
         self.dbHost = os.environ["TANGO_HOST"]
         if not len(self.dbHost) > 0:
             self.printStatus(
@@ -58,8 +60,8 @@ class DbPopulate:
 
     def dbConnect(self):
         """
-        Establishes a connection to the TANGO DB specified by the TANGO_HOST environment
-        variable on the host machine.
+        Establishes a connection to the TANGO DB specified by the TANGO_HOST
+        environment variable on the host machine.
         """
         if self.dbHost != "":
             self.printStatus(
@@ -81,7 +83,7 @@ class DbPopulate:
             )
             for s in self.server_list:
                 print(f"   SERVER: {s}")
-                #                instance_list = self.db.get_device_class_list( s )
+                #         instance_list = self.db.get_device_class_list(s)
                 instance_list = [
                     dev
                     for dev in self.db.get_device_class_list(s)
@@ -105,17 +107,20 @@ class DbPopulate:
             # print( f'   SERVER: {s}' )
 
     #                instance_list = self.db.get_device_class_list( s )
-    # instance_list = [dev for dev in self.db.get_device_class_list(s) if '/' in dev and not dev.startswith('dserver')]
+    # instance_list = [dev for dev in self.db.get_device_class_list(s) if '/'
+    # in dev and not dev.startswith('dserver')]
     # for i in instance_list:
     # print( f'       - {i}' )
 
     def deviceName(self, family):
         """
         Returns the composed instance name for a device
-        The device name is the unique tango identifier for a database instance of a device server
+        The device name is the unique tango identifier for a database instance
+        of a device server.
         The format is device/name/family
 
-        For the purposes of dbpopulate, device and name come frmo the input json.
+        For the purposes of dbpopulate, device and name come frmo the
+        input json.
         Family is provided by the calling method.
         """
         return f'{self.json["device"]}/{self.json["name"]}/{family}'
@@ -192,7 +197,8 @@ class DbPopulate:
                     for property in device["devprop"]:
                         self.printStatus(
                             "addDevice",
-                            f'    Adding device property {property}:{device["devprop"][property]}',
+                            f"    Adding device property {property}:"
+                            f'{device["devprop"][property]}',
                         )
                         self.db.put_device_property(
                             name, {property: device["devprop"][property]}
@@ -200,7 +206,8 @@ class DbPopulate:
                 except Exception as e:
                     self.printStatus(
                         "addDevice",
-                        f" *** Unable to set device properties for {name}\n{e}",
+                        f" *** Unable to set device properties for "
+                        f"{name}\n{e}",
                     )
             if "registerMetadata" in device.keys():
                 mta_offsets = []
@@ -320,7 +327,8 @@ class DbPopulate:
                     ]:
                         regdef_properties = dict(
                             {
-                                f"stage_{className[-1]}_host_lookup_mem_device_name": "/dev/mem",
+                                f"stage_{className[-1]}"
+                                f"_host_lookup_mem_device_name": "/dev/mem",
                                 "lw_bridge_base_offset": self.templates[
                                     template
                                 ]["bridge_address"],
@@ -363,7 +371,8 @@ class DbPopulate:
                     except Exception as e:
                         self.printStatus(
                             "addDevice",
-                            f" *** Unable to set device properties for {name}\n{e}",
+                            f" *** Unable to set device properties for "
+                            f"{name}\n{e}",
                         )
 
     def removeDevice(self, device):
@@ -426,17 +435,18 @@ class DbPopulate:
 
     def checkForDevice(self, className, device):
         """
-        Checks the DB for an instance of device with the supplied name, registered as a member
-        of the specified TANGO device class
+        Checks the DB for an instance of device with the supplied name,
+        registered as a member of the specified TANGO device class
         """
         dbList = self.db.get_device_name("*", className)
         return True if (device in dbList) else False
 
     def process(self, mode="add"):
         """
-        Process a JSON configuration input file. This file should contain information regarding
-        the TANGO device classes and instances that are to be created. This includes definintion
-        of any attribute and/or device properties.
+        Process a JSON configuration input file. This file should contain
+        information regarding the TANGO device classes and instances that
+        are to be created. This includes definintion of any attribute and/or
+        device properties.
         """
         self.printStatus("process", f"Called in {mode.upper()} mode.")
 

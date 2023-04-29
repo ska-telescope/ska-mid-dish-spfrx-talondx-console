@@ -65,6 +65,23 @@
             }
         }
     ],
+    "config_commands" : {
+        "1" : 
+        {
+            "description" : "Configure the SPFRx Talon-DX for operation.",
+            "target" : "spfrx",
+            "ip_address" : "192.168.8.200",
+            "talon_first_connect_timeout" : 90,
+            "ds_path" : "/usr/bin/",
+            "server_instance" : "psi-spfrx",
+            "devices" : [
+                "ska-mid-spfrx-controller-ds",
+                "ska-mid-spfrx-system-ds",
+                "ska-talondx-temperature-monitor-ds",
+                "ska-talondx-bsp-ds"
+            ]
+        }
+    },
     "tango-db" : {
         "db_servers" : [
             {
@@ -153,7 +170,7 @@
                 ]
             },
             {
-                "server" : "ska-mid-spfrx-system",
+                "server" : "ska-mid-spfrx-system-ds",
                 "instance" : "spfrx", 
                 "name" : "rxpu",
                 "device" : "psi-spfrx",

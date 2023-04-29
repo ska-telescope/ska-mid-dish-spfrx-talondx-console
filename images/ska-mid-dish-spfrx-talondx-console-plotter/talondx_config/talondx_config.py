@@ -26,41 +26,37 @@ class TalonDxConfig:
 
     def ds_binaries(self):
         """
-        Extracts and returns the `"ds_binaries"` section of the configuration
-        file that specifies the Tango DS binaries to be downloaded, and where
-        to get them.
+        Extracts and returns the `"ds_binaries"` section of the configuration file
+        that specifies the Tango DS binaries to be downloaded, and where to get them.
         """
         return self._json["ds_binaries"]
 
     def fpga_bitstreams(self):
         """
-        Extracts and returns the `"fpga_bitstreams"` section of the
-        configuration file that specifies which FPGA bitstreams to download,
-        and where to get them.
+        Extracts and returns the `"fpga_bitstreams"` section of the configuration file
+        that specifies which FPGA bitstreams to download, and where to get them.
         """
         return self._json["fpga_bitstreams"]
 
     def config_commands(self):
         """
-        Extracts and returns the `"config_commands"` section of the
-        configuration file that specifies the configuration commands that
-        are sent from the MCS to the Talon DX HPS Master device.
+        Extracts and returns the `"config_commands"` section of the configuration file
+        that specifies the configuration commands that are sent from the MCS to the
+        Talon DX HPS Master device.
         """
         return self._json["config_commands"]
 
     def tango_db(self):
         """
-        Extracts and returns the `"tango_db"` section of the configuration
-        file that contains the device server specifications for populating
-        the Tango DB.
+        Extracts and returns the `"tango_db"` section of the configuration file that
+        contains the device server specifications for populating the Tango DB.
         """
         return self._json["tango_db"]
 
     def export_config(self, export_path):
         """
-        Exports the Talon DX Configuration JSON to a file with same name
-        as that used to construct this object. Export will overwrite if the
-        file already exists.
+        Exports the Talon DX Configuration JSON to a file with same name as that used to
+        construct this object. Export will overwrite if the file already exists.
 
         :param export_path: destination path of exported configuration file.
         :type export_path: string
