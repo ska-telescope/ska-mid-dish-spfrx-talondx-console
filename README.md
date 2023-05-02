@@ -24,6 +24,12 @@ make run    # runs "hello world" test
 make oci-build --env OCI_IMAGE=<name of container image path>
 ```
 
+## Development
+To run the lint command:
+```
+make python-lint
+```
+
 ## Usage
 ### Run the Docker interactively
 To run the docker interactively:

@@ -9,9 +9,7 @@ import subprocess
 import time
 from enum import Enum
 
-# import requests
 import tango
-# from requests.structures import CaseInsensitiveDict
 from talondx_config.talondx_config import TalonDxConfig
 from tango import DeviceProxy
 from tqdm import tqdm
@@ -298,8 +296,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--db-list",
-        help="list the FQDNs (fully qualified domain names) of the HPS " +
-        "and MCS devices in the Tango database",
+        help="list the FQDNs (fully qualified domain names) of the HPS "
+        + "and MCS devices in the Tango database",
         action="store_true",
     )
     parser.add_argument(
@@ -309,14 +307,14 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--talon-version",
-        help="get the version information of the Tango devices running on " +
-        "the Talon DX boards",
+        help="get the version information of the Tango devices running on "
+        + "the Talon DX boards",
         action="store_true",
     )
     parser.add_argument(
         "--talon-status",
-        help="get the status information of the Tango devices running on " +
-        "the Talon DX boards",
+        help="get the status information of the Tango devices running on "
+        + "the Talon DX boards",
         action="store_true",
     )
     parser.add_argument(
@@ -357,9 +355,9 @@ if __name__ == "__main__":
     elif args.dish_packet_capture:
         logger_.info("Dish Packet Capture")
         subprocess.run(
-            "python3 ./mellanox_dish_packet_capture/src/PlotSampleData.py " +
-            "./mellanox_dish_packet_capture/src/default_inputs.json " +
-            "./mellanox_dish_packet_capture/src/default_inputs.json",
+            "python3 ./mellanox_dish_packet_capture/src/PlotSampleData.py "
+            + "./mellanox_dish_packet_capture/src/default_inputs.json "
+            + "./mellanox_dish_packet_capture/src/default_inputs.json",
             shell=True,
         )
     elif args.talon_version:
