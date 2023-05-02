@@ -38,9 +38,6 @@ stages:
 # Standardised included jobs
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
-  
-lint:
-  allow_failure: true
 
 include:
   # # OCI images build and publish 
