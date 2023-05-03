@@ -160,10 +160,6 @@ run-interactive: config-tango-dns  ## Run docker in interactive mode
 	--env TANGO_HOST=$(MCS_TANGO_HOST) \
 	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) bash
 
-copy-artifacts-pod:
-	@kubectl exec -n $(KUBE_NAMESPACE) $(ARTIFACTS_POD) -- mkdir -p /app/mnt/talondx-config
-	@if [ -d '$(SPFRX_LOCAL_DIR)' ]; then kubectl cp $(SPFRX_LOCAL_DIR)/ $(KUBE_NAMESPACE)/$(ARTIFACTS_POD):/app/mnt/;else echo "ERROR: Cannot find artifacts at mnt/talondx-config"; fi
-
 config-db: config-tango-dns copy-artifacts-pod ## Configure the database
 	@echo Configuring Tango DB at $(MCS_TANGO_HOST) with Talon device servers...
 	@docker run --rm \
@@ -184,21 +180,6 @@ download-artifacts:  ## Download artifacts from CAR and copy the on command sequ
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deployer/artifacts:rw \
 	$(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx-deployer.py --download-artifacts
 
-ds-override-local:
-	python3 ds_local_build.py ds_local_build.json $(ds_list) $(ds_basedir) $(mcs_dir)
-
-mcs-itango3:   ## open itango3 shell in MCS
-	kubectl exec -it cbfcontroller-controller-0 -n $(KUBE_NAMESPACE) -- itango3
-
-write-board-status: config-tango-dns status-datetime-dir
-	mkdir -p $(BITE_STATUS_LOCAL_DIR)
-	@docker run --rm \
-	--network host \
-	--env "TANGO_HOST=$(MCS_TANGO_HOST)" \
-	--env "TALONDX_STATUS_OUTPUT_DIR=/app/talon-board-status" \
-	--volume $(FINAL_DIR):/app/images/$(strip $(OCI_IMAGE))/talon-board-status:rw \
-	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --write-board-status
-
 talon-version: config-tango-dns
 	@docker run --rm \
 	--network host \
@@ -214,19 +195,19 @@ talon-status: config-tango-dns
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
 	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-status
 
-#mcs-on: config-tango-dns
-#	@docker run --rm \
-#	--network host \
-#	--env TANGO_HOST=$(MCS_TANGO_HOST) \
-#	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./talondx.py --mcs-on
+spfrx-plotter:
+	@docker run --rm \
+	--network host \
+	--env "TANGO_HOST=$(MCS_TANGO_HOST)" \
+	--env DISPLAY \
+	--volume /tmp/.X11-unix:/tmp/.X11-unix \
+	--volume $(HOME)/.Xauthority:/home/tango/.Xauthority \
+	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
+	--user tango \
+	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx-spectrum-plotter.py --plotter_version
 
 documentation:  ## Re-generate documentation
 	cd docs && make clean && make html
-
-pipeline_unit_test: ## Run simulation mode unit tests in a docker container as in the gitlab pipeline
-	@docker run --volume="$$(pwd):/home/tango/ska-tango-examples" \
-		--env PYTHONPATH=src:src/ska_tango_examples --env FILE=$(FILE) -it $(ITANGO_DOCKER_IMAGE) \
-		sh -c "cd /home/tango/ska-tango-examples && make requirements && make python-test"
 
 help: ## show this help.
 	@echo "make targets:"
