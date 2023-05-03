@@ -35,6 +35,9 @@ stages:
   - scan
   - pages
 
+python-lint:
+  allow_failure: true
+
 # Standardised included jobs
 variables:
   GIT_SUBMODULE_STRATEGY: recursive

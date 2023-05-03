@@ -195,6 +195,14 @@ talon-status: config-tango-dns
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
 	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-status
 
+spfrx: 
+	@docker run --rm \
+	--network host \
+	--env "TANGO_HOST=$(MCS_TANGO_HOST)" \
+	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
+	--user tango \
+	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx.py
+
 spfrx-plotter:
 	@docker run --rm \
 	--network host \
