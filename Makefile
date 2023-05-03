@@ -160,7 +160,7 @@ run-interactive: config-tango-dns  ## Run docker in interactive mode
 	--env TANGO_HOST=$(MCS_TANGO_HOST) \
 	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) bash
 
-config-db: config-tango-dns copy-artifacts-pod ## Configure the database
+config-db: config-tango-dns ## Configure the database
 	@echo Configuring Tango DB at $(MCS_TANGO_HOST) with Talon device servers...
 	@docker run --rm \
 	--network host \
