@@ -16,6 +16,12 @@ PROJECT = ska-mid-dish-spfrx-talondx-console
 # using Helm.  If this does not already exist it will be created
 KUBE_NAMESPACE ?= ska-mid-dish-spfrx
 DOMAIN ?= cluster.local
+SPFRX_ADDRESS ?= 192.168.8.200
+SPFRX_TANGO_INSTANCE ?= spfrx
+SPFRX_DEFAULT_LOGGING_LEVEL ?= 4
+SPFRX_BIN ?= /usr/local/bin
+TANGO_PORT ?= 10000
+QSFP_CONTROL_PATH ?= /usr/share/bittware/520nmx/cots/utilities/qsfp_control/bin
 
 # RELEASE_NAME is the release that all Kubernetes resources will be labelled
 # with
@@ -80,8 +86,8 @@ PYTHON_SWITCHES_FOR_FLAKE8 = --ignore=E203,E402,E501,F407,W503
 
 PYTHON_LINT_TARGET = $(IMG_DIR)
 
-MCS_DATABASE_POD = $(shell kubectl get svc -n $(KUBE_NAMESPACE) | grep databaseds | cut -d ' ' -f1)
-MCS_TANGO_HOST = $(MCS_DATABASE_POD).$(KUBE_NAMESPACE).svc.$(DOMAIN):10000
+SPFRX_DATABASE_POD = $(shell kubectl get svc -n $(KUBE_NAMESPACE) | grep databaseds | cut -d ' ' -f1)
+SPFRX_TANGO_HOST = $(SPFRX_DATABASE_POD).$(KUBE_NAMESPACE).svc.$(DOMAIN):$(TANGO_PORT)
 
 run:  ## Run docker container
 	docker run --rm $(strip $(OCI_IMAGE)):$(release)
@@ -114,6 +120,28 @@ RDMA_GID_IDX=$(shell show_gids | grep v2 | grep $(RDMA_IP) | awk -F ' ' '{print 
 config-tango-dns: ## Create list of additional MCS DS hosts for docker run command
 	@. scripts/config-tango-dns.sh $(KUBE_NAMESPACE) $(DOMAIN) $(ADD_HOSTS_FILE)
 
+# config-spfrx-dns needs to look like this,
+# ci-ska-skampi-cbf-automated-pipeline-testing-mid is the namespace which should be a variable
+# export TANGO_HOST=databaseds-tango-base.ci-ska-skampi-cbf-automated-pipeline-testing-mid.svc.cluster.local:10000
+# This is in the config-spfrx-tango-host.sh script
+config-spfrx-tango-host:
+	@. scripts/config-spfrx-tango-host.sh $(SPFRX_ADDRESS) $(KUBE_NAMESPACE) $(DOMAIN) $(TANGO_PORT)
+
+spfrx-deploy-artifacts:
+	@. scripts/spfrx-deploy-artifacts.sh $(SPFRX_ADDRESS) $(SPFRX_LOCAL_DIR) $(SPFRX_BIN)
+
+spfrx-start: config-spfrx-tango-host
+	@. scripts/spfrx-rxpu-ops.sh up $(SPFRX_ADDRESS) $(SPFRX_BIN) $(SPFRX_TANGO_INSTANCE) $(SPFRX_DEFAULT_LOGGING_LEVEL)
+
+spfrx-stop: config-spfrx-tango-host
+	@. scripts/spfrx-stop.sh down $(SPFRX_ADDRESS) $(SPFRX_BIN)
+
+spfrx-qsfp-hi-power:
+	@. scripts/spfrx-host-qsfp-hipower.sh ${QSFP_CONTROL_PATH}
+
+spfrx-test:
+	@echo $(MAKECMDGOALS)
+
 config-etc-hosts:
 	@. scripts/config-etc-hosts.sh $(KUBE_NAMESPACE) $(DOMAIN)
 
@@ -128,12 +156,12 @@ capture-datetime-dir:
 status-datetime-dir:
 	@. scripts/create-datetime-dir.sh $(BITE_STATUS_LOCAL_DIR) $(FINAL_DIR_FILE)
 
-x-jive: config-tango-dns  ## Run Jive with X11
+x-jive: config-tango-dns  config-spfrx-tango-host ## Run Jive with X11
 	@chmod 644 $(HOME)/.Xauthority
 	@docker run --rm \
 	--network host \
 	--env DISPLAY \
-	--env TANGO_HOST=$(MCS_TANGO_HOST) \
+	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
 	--volume /tmp/.X11-unix:/tmp/.X11-unix \
 	--volume $(HOME)/.Xauthority:/home/tango/.Xauthority \
 	$(ADD_HOSTS) artefact.skatelescope.org/ska-tango-images-tango-jive:7.22.5 &
@@ -153,18 +181,18 @@ x-pogo:  ## Run POGO with X11
 	--user tango \
 	$(ADD_HOSTS) artefact.skatelescope.org/ska-tango-images-tango-pogo:9.6.36 &
 
-run-interactive: config-tango-dns  ## Run docker in interactive mode
+run-interactive: config-tango-dns config-spfrx-tango-host ## Run docker in interactive mode
 	docker run --rm -it \
 	--network host \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
-	--env TANGO_HOST=$(MCS_TANGO_HOST) \
+	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
 	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) bash
 
-config-db: config-tango-dns copy-artifacts-pod ## Configure the database
-	@echo Configuring Tango DB at $(MCS_TANGO_HOST) with Talon device servers...
+config-db: config-tango-dns config-spfrx-tango-host ## Configure the database
+	@echo Configuring Tango DB at $(SPFRX_TANGO_HOST) with Talon device servers...
 	@docker run --rm \
 	--network host \
-	--env TANGO_HOST=$(MCS_TANGO_HOST) \
+	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deployer/artifacts:rw \
 	$(ADD_HOSTS) $(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx-deployer.py --config-db
 
@@ -180,33 +208,33 @@ download-artifacts:  ## Download artifacts from CAR and copy the on command sequ
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deployer/artifacts:rw \
 	$(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx-deployer.py --download-artifacts
 
-talon-version: config-tango-dns
+talon-version: config-tango-dns config-spfrx-tango-host
 	@docker run --rm \
 	--network host \
-	--env "TANGO_HOST=$(MCS_TANGO_HOST)" \
+	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
 	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-version
 
-talon-status: config-tango-dns
+talon-status: config-tango-dns config-spfrx-tango-host
 	@docker run --rm \
 	--network host \
-	--env "TANGO_HOST=$(MCS_TANGO_HOST)" \
+	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
 	--env TERM=xterm \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
 	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-status
 
-spfrx: 
+spfrx: config-spfrx-tango-host
 	@docker run --rm \
 	--network host \
-	--env "TANGO_HOST=$(MCS_TANGO_HOST)" \
+	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
 	--user tango \
 	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx.py
 
-spfrx-plotter:
+spfrx-plotter: config-spfrx-tango-host
 	@docker run --rm \
 	--network host \
-	--env "TANGO_HOST=$(MCS_TANGO_HOST)" \
+	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
 	--env DISPLAY \
 	--volume /tmp/.X11-unix:/tmp/.X11-unix \
 	--volume $(HOME)/.Xauthority:/home/tango/.Xauthority \
