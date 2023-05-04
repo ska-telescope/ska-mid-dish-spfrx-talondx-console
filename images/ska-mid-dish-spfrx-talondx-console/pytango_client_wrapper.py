@@ -72,6 +72,20 @@ class PyTangoClientWrapper:
             print(str(e))
             return None
 
+    def read_attributes(self, attr_names: list[str]) -> Any:
+        """
+        Read a list of attributes.
+  
+        :param attr_names: A list of attributes names to read from
+        :returns: The returned list of attribute objects
+        """
+        try:
+            attrs_read = self.dp.read_attributes(attr_names)
+            return attrs_read
+        except Exception as e:
+            print(str(e))
+            return None
+
     def command_read_write(self, command_name: str, *args) -> Any:
         """
         Send a command.
