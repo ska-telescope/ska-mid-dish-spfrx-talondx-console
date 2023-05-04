@@ -133,7 +133,7 @@ def configure_db(inputjson):
         #     handleValidationError( error, server )
         #     exit(1)
 
-        dbpop = DbPopulate(server, None)
+        dbpop = DbPopulate(server)
 
         # Remove and add to ensure any previous record is overwritten
         dbpop.process(mode="remove")

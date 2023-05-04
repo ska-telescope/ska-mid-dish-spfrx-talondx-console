@@ -32,7 +32,7 @@ class DbPopulate:
 
     ##
     # Initialize the class module
-    def __init__(self, json, templates):
+    def __init__(self, json):
         # Store the input JSON file as a dict
         self.json = json
 
@@ -45,9 +45,6 @@ class DbPopulate:
             )
             exit(0)
         self.printStatus("__init__", f"Detected TANGO_HOST {self.dbHost}")
-
-        self.templates = templates
-        self.template_names = list(self.templates.keys())
 
         # Establish connection to TANGO DB
         self.dbConnect()
@@ -131,249 +128,46 @@ class DbPopulate:
         """
         className = device["class"]
 
-        alias_dict = {}
+        alias = device["alias"]
 
-        if "registerMetadata" in device.keys():
-            register_metadata = device["registerMetadata"]
-            for register_set in register_metadata["templateDefinitions"]:
-                for temp in self.template_names:
-                    temp_match = re.match(register_set["regex"], temp)
-                    if temp_match is not None:
-                        if "aliasPerMatch" in register_set:
-                            alias_per_match = register_set["aliasPerMatch"]
-                            if len(temp_match.groupdict()) > 0:
-                                matched_values = temp_match.groupdict()
-                            else:
-                                matched_values = {"": ""}
-                            for match in matched_values:
-                                alias_per_match = alias_per_match.replace(
-                                    "{" + match + "}",
-                                    matched_values[match],
-                                )
-                            if alias_per_match in alias_dict:
-                                alias_dict[alias_per_match].append(
-                                    temp_match.string
-                                )
-                            else:
-                                alias_dict[alias_per_match] = [
-                                    temp_match.string
-                                ]
-                        else:
-                            if device["alias"] in alias_dict:
-                                alias_dict[device["alias"]].append(
-                                    temp_match.string
-                                )
-                            else:
-                                alias_dict[device["alias"]] = [
-                                    temp_match.string
-                                ]
+        if device.get("id", None) is not None:
+            name = self.deviceName(f'{alias}-{device["id"]}')
         else:
-            alias_dict[device["alias"]] = []
-
-        for alias in alias_dict:
-            if device.get("id", None) is not None:
-                name = self.deviceName(f'{alias}-{device["id"]}')
-            else:
-                name = self.deviceName(alias)
-            device_info = DbDevInfo()
-            device_info.name = name
-            device_info._class = className
-            device_info.server = (
-                f'{self.json["server"]}/{self.json["instance"]}'
+            name = self.deviceName(alias)
+        device_info = DbDevInfo()
+        device_info.name = name
+        device_info._class = className
+        device_info.server = (
+            f'{self.json["server"]}/{self.json["instance"]}'
+        )
+        try:
+            self.printStatus(
+                "addDevice",
+                f"  Installing device {name} under {className}",
             )
+            self.db.add_device(device_info)
+        except Exception as e:
+            self.printStatus(
+                "addDevice",
+                f" *** Unable to create device {name}\n{e}",
+            )
+        if "devprop" in device.keys():
             try:
-                self.printStatus(
-                    "addDevice",
-                    f"  Installing device {name} under {className}",
-                )
-                self.db.add_device(device_info)
+                for property in device["devprop"]:
+                    self.printStatus(
+                        "addDevice",
+                        f"    Adding device property {property}:"
+                        f'{device["devprop"][property]}',
+                    )
+                    self.db.put_device_property(
+                        name, {property: device["devprop"][property]}
+                    )
             except Exception as e:
                 self.printStatus(
                     "addDevice",
-                    f" *** Unable to create device {name}\n{e}",
+                    f" *** Unable to set device properties for "
+                    f"{name}\n{e}",
                 )
-            if "devprop" in device.keys():
-                try:
-                    for property in device["devprop"]:
-                        self.printStatus(
-                            "addDevice",
-                            f"    Adding device property {property}:"
-                            f'{device["devprop"][property]}',
-                        )
-                        self.db.put_device_property(
-                            name, {property: device["devprop"][property]}
-                        )
-                except Exception as e:
-                    self.printStatus(
-                        "addDevice",
-                        f" *** Unable to set device properties for "
-                        f"{name}\n{e}",
-                    )
-            if "registerMetadata" in device.keys():
-                mta_offsets = []
-                for template in alias_dict[alias]:
-                    mnemonic = self.templates[template]["regdef"]["mnemonic"]
-                    if className in [
-                        "SkaTalondxStatusDs",
-                        "SkaMidSpfrxPacketizerDs",
-                        "SkaTalonDx100GigabitEthernetDs",
-                        "DsWBStateCount",
-                        "DsVcc",
-                        "DsDCT",
-                        "DsFineChannelizer",
-                        "DsLstvGen",
-                        "DsWBInputBuffer",
-                    ]:
-                        regdef_properties = dict(
-                            {
-                                f"{mnemonic}_filename": "/dev/mem",
-                                f"{mnemonic}_bridge_offset": self.templates[
-                                    template
-                                ]["bridge_address"],
-                                f"{mnemonic}_firmware_offset": self.templates[
-                                    template
-                                ]["firmware_offset"],
-                            }
-                        )
-
-                    elif className == "DsTalonDxRDMA":
-                        regdef_properties = dict(
-                            {
-                                "mem_device_name": "/dev/mem",
-                                "bridge_base_offset": self.templates[template][
-                                    "bridge_address"
-                                ],
-                                f"{mnemonic}_firmware_offset": self.templates[
-                                    template
-                                ]["firmware_offset"],
-                            }
-                        )
-
-                    elif className == "DsResamplerDelayTracker":
-                        regdef_properties = {}
-
-                        if "G_POL[0]" in template:
-                            regdef_properties[
-                                "first_order_delay_models_polX_filename"
-                            ] = "/dev/mem"
-                            regdef_properties[
-                                "first_order_delay_models_polX_firmware_offset"
-                            ] = self.templates[template]["firmware_offset"]
-                        elif "G_POL[1]" in template:
-                            regdef_properties[
-                                "first_order_delay_models_polY_filename"
-                            ] = "/dev/mem"
-                            regdef_properties[
-                                "first_order_delay_models_polY_firmware_offset"
-                            ] = self.templates[template]["firmware_offset"]
-                        else:
-                            regdef_properties[
-                                "resampler_delay_tracker_lw_bridge_offset"
-                            ] = self.templates[template]["bridge_address"]
-                            regdef_properties[
-                                "resampler_delay_tracker_hp_bridge_offset"
-                            ] = self.templates[template]["bridge_address"]
-                            regdef_properties[
-                                "resampler_delay_tracker_filename"
-                            ] = "/dev/mem"
-                            regdef_properties[
-                                "resampler_delay_tracker_firmware_offset"
-                            ] = self.templates[template]["firmware_offset"]
-
-                    elif className == "DsCorrelator":
-                        regdef_properties = dict(
-                            {
-                                "correlator_filename": "/dev/mem",
-                            }
-                        )
-                        if mnemonic == "correlator_mta":
-                            regdef_properties[
-                                "correlator_hp_bridge_offset"
-                            ] = self.templates[template]["bridge_address"]
-                            mta_offsets.append(
-                                self.templates[template]["firmware_offset"]
-                            )
-                            regdef_properties[
-                                "correlator_mta_firmware_offsets"
-                            ] = mta_offsets
-                            regdef_properties["correlator_mta_num"] = len(
-                                mta_offsets
-                            )
-
-                        elif mnemonic == "correlator_lta":
-                            regdef_properties[
-                                "correlator_lw_bridge_offset"
-                            ] = self.templates[template]["bridge_address"]
-                            regdef_properties[
-                                "correlator_lta_firmware_offset"
-                            ] = self.templates[template]["firmware_offset"]
-
-                    elif className == "DsSpeadDescriptor":
-                        regdef_properties = dict(
-                            {
-                                "mem_device_name": "/dev/mem",
-                                "lw_bridge_base_offset": self.templates[
-                                    template
-                                ]["bridge_address"],
-                                f"{mnemonic}_ip_offset": self.templates[
-                                    template
-                                ]["firmware_offset"],
-                            }
-                        )
-
-                    elif className in [
-                        "DsHostLUTStage1",
-                        "DsHostLUTStage2",
-                    ]:
-                        regdef_properties = dict(
-                            {
-                                f"stage_{className[-1]}"
-                                f"_host_lookup_mem_device_name": "/dev/mem",
-                                "lw_bridge_base_offset": self.templates[
-                                    template
-                                ]["bridge_address"],
-                            }
-                        )
-                        if mnemonic == "host_lut_s1":
-                            regdef_properties[
-                                "stage_1_host_lookup_ip_offset"
-                            ] = self.templates[template]["firmware_offset"]
-                        if mnemonic == "host_lut_s2":
-                            regdef_properties[
-                                "stage_2_host_lookup_ip_offset"
-                            ] = self.templates[template]["firmware_offset"]
-                        if mnemonic == "source_host_config":
-                            regdef_properties[
-                                "source_host_config_ip_offset"
-                            ] = self.templates[template]["firmware_offset"]
-                            regdef_properties[
-                                "source_host_config_mem_device_name"
-                            ] = "/dev/mem"
-
-                    else:
-                        regdef_properties = dict(
-                            {
-                                "mem_device_name": "/dev/mem",
-                                "bridge_base_offset": self.templates[template][
-                                    "bridge_address"
-                                ],
-                                f"{mnemonic}_ip_offset": self.templates[
-                                    template
-                                ]["firmware_offset"],
-                            }
-                        )
-                    try:
-                        self.printStatus(
-                            "addDevice",
-                            f"    Adding device property {regdef_properties}",
-                        )
-                        self.db.put_device_property(name, regdef_properties)
-                    except Exception as e:
-                        self.printStatus(
-                            "addDevice",
-                            f" *** Unable to set device properties for "
-                            f"{name}\n{e}",
-                        )
 
     def removeDevice(self, device):
         """
@@ -381,57 +175,20 @@ class DbPopulate:
         """
         className = device["class"]
 
-        alias_dict = {}
 
-        if "registerMetadata" in device.keys():
-            register_metadata = device["registerMetadata"]
-            for register_set in register_metadata["templateDefinitions"]:
-                for temp in self.template_names:
-                    temp_match = re.match(register_set["regex"], temp)
-                    if temp_match is not None:
-                        if "aliasPerMatch" in register_set:
-                            alias_per_match = register_set["aliasPerMatch"]
-                            if len(temp_match.groupdict()) > 0:
-                                matched_values = temp_match.groupdict()
-                                for match in matched_values:
-                                    alias_per_match = alias_per_match.replace(
-                                        "{" + match + "}",
-                                        matched_values[match],
-                                    )
-                                if alias_per_match in alias_dict:
-                                    alias_dict[alias_per_match].append(
-                                        temp_match.string
-                                    )
-                                else:
-                                    alias_dict[alias_per_match] = [
-                                        temp_match.string
-                                    ]
-                        else:
-                            if device["alias"] in alias_dict:
-                                alias_dict[device["alias"]].append(
-                                    temp_match.string
-                                )
-                            else:
-                                alias_dict[device["alias"]] = [
-                                    temp_match.string
-                                ]
+        alias = device["alias"]
+        
+        if device.get("id", None) is not None:
+            name = self.deviceName(f'{alias}-{device["id"]}')
         else:
-            alias_dict[device["alias"]] = []
-
-        for alias in alias_dict:
-            if device.get("id", None) is not None:
-                name = self.deviceName(f'{alias}-{device["id"]}')
-            else:
-                name = self.deviceName(alias)
-
-            if self.checkForDevice(className, name):
-                self.printStatus("removeDevice", f" Removing device {name}")
-                self.db.delete_device(name)
-
-            else:
-                self.printStatus(
-                    "removeDevice", f" Device {name} not found in DB"
-                )
+            name = self.deviceName(alias)
+        if self.checkForDevice(className, name):
+            self.printStatus("removeDevice", f" Removing device {name}")
+            self.db.delete_device(name)
+        else:
+            self.printStatus(
+                "removeDevice", f" Device {name} not found in DB"
+            )
 
     def checkForDevice(self, className, device):
         """
