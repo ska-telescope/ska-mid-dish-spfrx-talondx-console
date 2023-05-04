@@ -301,11 +301,6 @@ if __name__ == "__main__":
         action="store_true",
     )
     parser.add_argument(
-        "--dish-packet-capture",
-        help="Start the Dish Packet Capture",
-        action="store_true",
-    )
-    parser.add_argument(
         "--talon-version",
         help="get the version information of the Tango devices running on "
         + "the Talon DX boards",
@@ -318,30 +313,6 @@ if __name__ == "__main__":
         action="store_true",
     )
     parser.add_argument(
-        "--talon-power-status",
-        help="get the status of the Talon LRU power supply",
-        action="store_true",
-    )
-    parser.add_argument(
-        "--mcs-off",
-        help="run the MCS Off command sequence",
-        action="store_true",
-    )
-    parser.add_argument(
-        "--mcs-on", help="run the MCS On command sequence", action="store_true"
-    )
-    parser.add_argument(
-        "--rdma-on-commands",
-        help="set the rdma on commands to connect to tx and transfer data",
-        action="store_true",
-    )
-    parser.add_argument(
-        "--mcs-vcc-scan", help="run the scan vcc commands", action="store_true"
-    )
-    parser.add_argument(
-        "--mcs-fsp-scan", help="run the scan fsp commands", action="store_true"
-    )
-    parser.add_argument(
         "--write-talon-status",
         help="write talon board status to file",
         action="store_true",
@@ -352,14 +323,6 @@ if __name__ == "__main__":
         logger_.info("DB List")
         for inst in get_device_fqdn_list():
             logger_.info(inst)
-    elif args.dish_packet_capture:
-        logger_.info("Dish Packet Capture")
-        subprocess.run(
-            "python3 ./mellanox_dish_packet_capture/src/PlotSampleData.py "
-            + "./mellanox_dish_packet_capture/src/default_inputs.json "
-            + "./mellanox_dish_packet_capture/src/default_inputs.json",
-            shell=True,
-        )
     elif args.talon_version:
         logger_.info("Talon Version Information")
         config = TalonDxConfig(config_file=SPFRX_CONFIG_FILE)
