@@ -17,8 +17,8 @@ POL_H = 0
 POL_V = 1
 POLS = ("H", "V")
 
-SPFRX_DEVICE = "psi-spfrx"
-SPFRX_NAME = "rxpu"
+SPFRX_DEVICE = "ska001"
+SPFRX_NAME = "spfrxpu"
 
 LOG_FORMAT = (
     "[spfrx.py: line %(lineno)s]%(levelname)s: %(message)s"

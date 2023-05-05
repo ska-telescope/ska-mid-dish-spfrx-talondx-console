@@ -200,7 +200,7 @@ generate-spfrx-config:
 	@docker run --rm \
 	--network host \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deployer/artifacts:rw \
-	$(ADD_HOSTS) $(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx-deployer.py --generate-spfrx-config
+	$(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx-deployer.py --generate-spfrx-config
 
 download-artifacts:  ## Download artifacts from CAR and copy the on command sequence script
 	mkdir -p $(SPFRX_LOCAL_DIR)

@@ -18,8 +18,8 @@ LOG_FORMAT = (
 )
 VERSION = "0.0.1"
 
-SPFRX_DEVICE = "psi-spfrx"
-SPFRX_NAME = "rxpu"
+SPFRX_DEVICE = "ska001"
+SPFRX_NAME = "spfrxpu"
 SPFRX_CTRL_ALIAS = "controller"
 SPFRX_PKTCAP_ALIAS = "pktcap"
 

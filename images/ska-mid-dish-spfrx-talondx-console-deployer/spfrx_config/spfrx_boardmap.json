@@ -23,7 +23,7 @@
                 "package_name" : "ska-mid-spfrx-system",
                 "user" : "nrc",
                 "channel" : "stable",
-                "version" : "1.0.1",
+                "version" : "1.0.2",
                 "profile" : "conan_aarch64_profile.txt"
             },
             "git" : {
@@ -73,7 +73,7 @@
             "ip_address" : "192.168.8.200",
             "talon_first_connect_timeout" : 90,
             "ds_path" : "/usr/bin/",
-            "server_instance" : "psi-spfrx",
+            "server_instance" : "ska001",
             "devices" : [
                 "ska-mid-spfrx-controller-ds",
                 "ska-mid-spfrx-system-ds",
@@ -87,40 +87,40 @@
             {
                 "server" : "ska-mid-spfrx-controller-ds",
                 "instance" : "spfrx", 
-                "name" : "rxpu",
-                "device" : "psi-spfrx",
+                "name" : "spfrxpu",
+                "device" : "ska001",
                 "deviceList" : [
                     {
                         "class" : "SkaMidSpfrxControllerDs",
                         "alias" : "controller",
                         "devprop" : {
-                            "FpgaTemperatureDeviceName" : "psi-spfrx/rxpu/fpgatemp-1",
-                            "TalonDxBspFanControlDeviceName" : "psi-spfrx/rxpu/fan",
-                            "TalonDxBspTemperatureMonitorDeviceName" : "psi-spfrx/rxpu/temperature",
-                            "TalonDxBspMboRx1DeviceName" : "psi-spfrx/rxpu/mbo-rx1",
-                            "TalonDxBspMboRx2DeviceName" : "psi-spfrx/rxpu/mbo-rx2",
-                            "TalonDxBspMboRx3DeviceName" : "psi-spfrx/rxpu/mbo-rx3",
-                            "TalonDxBspMboRx4DeviceName" : "psi-spfrx/rxpu/mbo-rx4",
-                            "TalonDxBspMboRx5DeviceName" : "psi-spfrx/rxpu/mbo-rx5",
-                            "TalonDxBspMboTx1DeviceName" : "psi-spfrx/rxpu/mbo-tx1",
-                            "TalonDxBspMboTx2DeviceName" : "psi-spfrx/rxpu/mbo-tx2",
-                            "TalonDxBspMboTx3DeviceName" : "psi-spfrx/rxpu/mbo-tx3",
-                            "TalonDxBspMboTx4DeviceName" : "psi-spfrx/rxpu/mbo-tx4",
-                            "TalonDxBspMboTx5DeviceName" : "psi-spfrx/rxpu/mbo-tx5",
-                            "TalonDxBspLtm1DeviceName" : "psi-spfrx/rxpu/ltm-1",
-                            "TalonDxBspLtm2DeviceName" : "psi-spfrx/rxpu/ltm-2",
-                            "TalonDxBspLtm11DeviceName" : "psi-spfrx/rxpu/ltm-11",
-                            "TalonDxBspLtm12DeviceName" : "psi-spfrx/rxpu/ltm-12",
-                            "BandProcessor123DeviceName12" : "psi-spfrx/rxpu/bandprocessor123-0",
-                            "BandProcessor123DeviceName3": "psi-spfrx/rxpu/bandprocessor123-1",
-                            "DataReceiver123DeviceName12" : "psi-spfrx/rxpu/datarx123-0",
-                            "DataReceiver123DeviceName3" : "psi-spfrx/rxpu/datarx123-1",
-                            "DataStreamSwitchDeviceName" : "psi-spfrx/rxpu/mux",
-                            "GigabitEthernetDeviceName" : "psi-spfrx/rxpu/100gigeth",
-                            "PacketCaptureDeviceName" : "psi-spfrx/rxpu/pktcap",
-                            "PacketizerDeviceName" : "psi-spfrx/rxpu/packetizer",
-                            "ODL12DeviceName" : "psi-spfrx/rxpu/odl-12",
-                            "ODL3DeviceName" : "psi-spfrx/rxpu/odl-3",
+                            "FpgaTemperatureDeviceName" : "ska001/spfrxpu/fpgatemp-1",
+                            "TalonDxBspFanControlDeviceName" : "ska001/spfrxpu/fan",
+                            "TalonDxBspTemperatureMonitorDeviceName" : "ska001/spfrxpu/temperature",
+                            "TalonDxBspMboRx1DeviceName" : "ska001/spfrxpu/mbo-rx1",
+                            "TalonDxBspMboRx2DeviceName" : "ska001/spfrxpu/mbo-rx2",
+                            "TalonDxBspMboRx3DeviceName" : "ska001/spfrxpu/mbo-rx3",
+                            "TalonDxBspMboRx4DeviceName" : "ska001/spfrxpu/mbo-rx4",
+                            "TalonDxBspMboRx5DeviceName" : "ska001/spfrxpu/mbo-rx5",
+                            "TalonDxBspMboTx1DeviceName" : "ska001/spfrxpu/mbo-tx1",
+                            "TalonDxBspMboTx2DeviceName" : "ska001/spfrxpu/mbo-tx2",
+                            "TalonDxBspMboTx3DeviceName" : "ska001/spfrxpu/mbo-tx3",
+                            "TalonDxBspMboTx4DeviceName" : "ska001/spfrxpu/mbo-tx4",
+                            "TalonDxBspMboTx5DeviceName" : "ska001/spfrxpu/mbo-tx5",
+                            "TalonDxBspLtm1DeviceName" : "ska001/spfrxpu/ltm-1",
+                            "TalonDxBspLtm2DeviceName" : "ska001/spfrxpu/ltm-2",
+                            "TalonDxBspLtm11DeviceName" : "ska001/spfrxpu/ltm-11",
+                            "TalonDxBspLtm12DeviceName" : "ska001/spfrxpu/ltm-12",
+                            "BandProcessor123DeviceName12" : "ska001/spfrxpu/bandprocessor123-0",
+                            "BandProcessor123DeviceName3": "ska001/spfrxpu/bandprocessor123-1",
+                            "DataReceiver123DeviceName12" : "ska001/spfrxpu/datarx123-0",
+                            "DataReceiver123DeviceName3" : "ska001/spfrxpu/datarx123-1",
+                            "DataStreamSwitchDeviceName" : "ska001/spfrxpu/mux",
+                            "GigabitEthernetDeviceName" : "ska001/spfrxpu/100gigeth",
+                            "PacketCaptureDeviceName" : "ska001/spfrxpu/pktcap",
+                            "PacketizerDeviceName" : "ska001/spfrxpu/packetizer",
+                            "ODL12DeviceName" : "ska001/spfrxpu/odl-12",
+                            "ODL3DeviceName" : "ska001/spfrxpu/odl-3",
                             "B1PolHNominalAttenuation" : 10,  
                             "B2PolHNominalAttenuation" : 10,  
                             "B3PolHNominalAttenuation" : 10,  
@@ -161,7 +161,7 @@
                             "LoggingLevelDefault" : 4,
                             "LoggingTargetsDefault" : [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ],
                             "SkaLevel" : "",
                             "GroupDefinitions" : ""
@@ -172,8 +172,8 @@
             {
                 "server" : "ska-mid-spfrx-system-ds",
                 "instance" : "spfrx", 
-                "name" : "rxpu",
-                "device" : "psi-spfrx",
+                "name" : "spfrxpu",
+                "device" : "ska001",
                 "deviceList" : [
                     {
                         "class" : "SkaTalondxSysidDs",
@@ -185,7 +185,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -222,7 +222,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -244,10 +244,11 @@
                             "spfrx_pwr_mtr_data_filename" : "/dev/mem",
                             "spfrx_pwr_mtr_data_bridge_offset" : 4177526784,
                             "spfrx_pwr_mtr_data_firmware_offset" : 8192,
+                            "spfrx_polarity_inv_value" : 0,
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -269,10 +270,11 @@
                             "spfrx_pwr_mtr_data_filename" : "/dev/mem",
                             "spfrx_pwr_mtr_data_bridge_offset" : 4177526784,
                             "spfrx_pwr_mtr_data_firmware_offset" : 12288,
+                            "spfrx_polarity_inv_value" : 0,
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"]
+                                "device::ska001/spfrxpu/log-consumer-0"]
                        }
                     },
                     {
@@ -292,7 +294,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -313,7 +315,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -327,7 +329,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -347,7 +349,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -362,7 +364,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -392,10 +394,11 @@
                             "intel_i2c_filename" : "/dev/mem",
                             "intel_i2c_bridge_offset" : 4177526784,
                             "intel_i2c_firmware_offset" : 768,
+                            "ecp_status" : 1,
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -425,10 +428,11 @@
                             "intel_i2c_filename" : "/dev/mem",
                             "intel_i2c_bridge_offset" : 4177526784,
                             "intel_i2c_firmware_offset" : 832,
+                            "ecp_status" : 1,
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     }
@@ -437,8 +441,8 @@
             {
                 "server" : "ska-talondx-temperature-monitor-ds",
                 "instance" : "spfrx", 
-                "name" : "rxpu",
-                "device" : "psi-spfrx",
+                "name" : "spfrxpu",
+                "device" : "ska001",
                 "deviceList" : [
                     {
                         "class" : "SkaTalondxTemperatureMonitorDs",
@@ -450,7 +454,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     }
@@ -459,8 +463,8 @@
             {
                 "server" : "ska-talondx-bsp-ds",
                 "instance" : "spfrx", 
-                "name" : "rxpu",
-                "device" : "psi-spfrx",
+                "name" : "spfrxpu",
+                "device" : "ska001",
                 "deviceList" : [
                     {
                         "class" : "SkaTalondxBspDsFan",
@@ -479,7 +483,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -500,7 +504,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -515,7 +519,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -530,7 +534,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -545,7 +549,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -560,7 +564,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -581,7 +585,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -602,7 +606,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -623,7 +627,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -644,7 +648,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     },
@@ -665,7 +669,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::psi-spfrx/rxpu/log-consumer-0"
+                                "device::ska001/spfrxpu/log-consumer-0"
                             ]
                         }
                     }
