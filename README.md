@@ -19,7 +19,11 @@ make oci-build # or "poetry run make oci-build" if not in the poetry shell
 make run    # runs "hello world" test
 ```
 
-*Note: one may also build a specific container - useful during development*
+*Note: one may build all containers with the same command*
+```
+make oci-build-all
+```
+*or build a specific container - useful during development*
 ```
 make oci-build --env OCI_IMAGE=<name of container image path>
 ```

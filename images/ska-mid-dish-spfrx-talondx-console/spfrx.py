@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import argparse
 import getpass
 import logging
@@ -676,8 +675,6 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    print(args)
-
     if args.version:
         logger_.info(
             f"VERSION: {VERSION}"
@@ -852,3 +849,6 @@ if __name__ == "__main__":
             logger_.info("Spectrometer ENABLED.")
         else:
             logger_.warning("Problem while enabling spectrometer.")
+
+    else:
+        logger_.info("Hello from Mid DISH SPFRx Console")

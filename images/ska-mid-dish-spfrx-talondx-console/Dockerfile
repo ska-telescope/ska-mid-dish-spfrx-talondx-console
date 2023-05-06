@@ -19,7 +19,6 @@ LABEL \
 # scripts through the directories each time
 WORKDIR /app/images/ska-mid-dish-spfrx-talondx-console/
 
-RUN mkdir -p /app/images/ska-mid-dish-spfrx-talondx-console/artifacts
 USER root
 
 # TODO: temporary; uncomment following lines to fix pip ssl verification issue
@@ -43,8 +42,5 @@ COPY pyproject.toml poetry.lock /app/
 RUN poetry export --format requirements.txt --output poetry-requirements.txt --without-hashes --without dev && \
     pip install -r poetry-requirements.txt && \
     rm poetry-requirements.txt
-
-COPY /images/ska-mid-dish-spfrx-talondx-console/conan_local/remotes.json /root/.conan/remotes.json
-RUN conan remote list
 
 CMD ./spfrx.py

@@ -294,4 +294,4 @@ if __name__ == "__main__":
         logger_.info("Generate spfrx-config.json file")
         generate_spfrx_config()
     else:
-        logger_.info("Hello from Mid DISH SPFRx Talon-DX Console!")
+        logger_.info("Hello from Mid DISH SPFRx Deployer")

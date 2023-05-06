@@ -27,7 +27,7 @@ QSFP_CONTROL_PATH ?= /usr/share/bittware/520nmx/cots/utilities/qsfp_control/bin
 # with
 RELEASE_NAME ?= test
 
-OCI_IMAGES ?= ska-mid-dish-spfrx-talondx-console ska-mid-dish-spfrx-talondx-console-deployer
+OCI_IMAGES ?= ska-mid-dish-spfrx-talondx-console ska-mid-dish-spfrx-talondx-console-deploy
 OCI_IMAGES_TO_PUBLISH ?= $(OCI_IMAGES)
 OCI_IMAGE_BUILD_CONTEXT = $(PWD)
 
@@ -193,20 +193,20 @@ config-db: config-tango-dns config-spfrx-tango-host ## Configure the database
 	@docker run --rm \
 	--network host \
 	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
-	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deployer/artifacts:rw \
-	$(ADD_HOSTS) $(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx-deployer.py --config-db
+	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
+	$(ADD_HOSTS) $(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx-deployer.py --config-db
 
 generate-spfrx-config:
 	@docker run --rm \
 	--network host \
-	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deployer/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx-deployer.py --generate-spfrx-config
+	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
+	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx-deployer.py --generate-spfrx-config
 
 download-artifacts:  ## Download artifacts from CAR and copy the on command sequence script
 	mkdir -p $(SPFRX_LOCAL_DIR)
 	@docker run --rm \
-	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deployer/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deployer:$(release) ./spfrx-deployer.py --download-artifacts
+	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
+	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx-deployer.py --download-artifacts
 
 talon-version: config-tango-dns config-spfrx-tango-host
 	@docker run --rm \
@@ -223,13 +223,19 @@ talon-status: config-tango-dns config-spfrx-tango-host
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
 	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-status
 
-spfrx: config-spfrx-tango-host
+spfrx:# config-spfrx-tango-host
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
-	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
 	--user tango \
-	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx.py
+	$(strip $(OCI_IMAGE)):$(release) ./spfrx.py
+
+spfrx-deploy:# config-spfrx-tango-host
+	@docker run --rm \
+	--network host \
+	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
+	--user tango \
+	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx-deployer.py
 
 spfrx-plotter: config-spfrx-tango-host
 	@docker run --rm \
@@ -238,9 +244,8 @@ spfrx-plotter: config-spfrx-tango-host
 	--env DISPLAY \
 	--volume /tmp/.X11-unix:/tmp/.X11-unix \
 	--volume $(HOME)/.Xauthority:/home/tango/.Xauthority \
-	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))/artifacts:rw \
 	--user tango \
-	$(ADD_HOSTS) $(strip $(OCI_IMAGE)):$(release) ./spfrx-spectrum-plotter.py --plotter_version
+	$(strip $(OCI_IMAGE))-plot:$(release) ./spfrx-spectrum-plotter.py --plotter_version
 
 documentation:  ## Re-generate documentation
 	cd docs && make clean && make html

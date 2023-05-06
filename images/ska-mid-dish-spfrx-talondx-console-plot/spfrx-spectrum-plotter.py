@@ -3,15 +3,13 @@
 import argparse
 import getpass
 import logging
-
-import matplotlib
+import numpy as np
 import matplotlib.animation as anim
 import matplotlib.pyplot as plt
-import numpy as np
 
 from pytango_client_wrapper import PyTangoClientWrapper
 
-# matplotlib.use("TkAgg")
+matplotlib.use("TkAgg")
 
 LOG_FORMAT = (
     "[spfrx-spectrum-plotter.py: line %(lineno)s]%(levelname)s: %(message)s"
@@ -497,8 +495,6 @@ if __name__ == "__main__":
     if args.plotter_version:
         logger_.info(f"spfrx-spectrum-plotter VERSION:{VERSION}")
         exit(0)
-
-    print(args)
 
     sp = SpectrumPlotter(
         args.throttle_interval,
