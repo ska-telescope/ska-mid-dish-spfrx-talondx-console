@@ -53,3 +53,5 @@ images/ska-mid-cbf-engineering-console/certs
 images/ska-mid-cbf-engineering-console/pip.conf
 
 automation/*
+
+private*

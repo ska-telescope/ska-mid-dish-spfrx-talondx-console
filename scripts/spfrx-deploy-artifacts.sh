@@ -18,16 +18,20 @@ display_usage() {
     echo -e "SPFRX_BIN : The directory on SPFRX RXPU containing executables"
 }
 
+spfrx_ip=${1}
+spfrx_local_dir=${2}
+spfrx_bin=${3}
+
 if [ $# -lt 3 ]
 then
     display_usage
     exit 1
 fi
 
-scp ${2}/ska-mid-spfrx-controller-ds root@${1}:${3}/.
-scp ${2}/ska-mid-spfrx-system-ds root@${1}:${3}/.
-scp ${2}/ska-talondx-bsp-ds root@${1}:${3}/.
-scp ${2}/ska-talondx-temperature-monitor-ds root@${1}:${3}/.
+scp ${spfrx_local_dir}/ska-mid-spfrx-controller-ds root@${spfrx_ip}:${spfrx_bin}/.
+scp ${spfrx_local_dir}/ska-mid-spfrx-system-ds root@${spfrx_ip}:${spfrx_bin}/.
+scp ${spfrx_local_dir}/ska-talondx-bsp-ds root@${spfrx_ip}:${spfrx_bin}/.
+scp ${spfrx_local_dir}/ska-talondx-temperature-monitor-ds root@${spfrx_ip}:${spfrx_bin}/.
 
-scp ${2}/remote/spfrx-start.sh root@${1}:${3}/.
-scp ${2}/remote/spfrx-stop.sh root@${1}:${3}/.
+scp ${spfrx_local_dir}/remote/spfrx-start.sh root@${spfrx_ip}:${spfrx_bin}/.
+scp ${spfrx_local_dir}/remote/spfrx-stop.sh root@${spfrx_ip}:${spfrx_bin}/.

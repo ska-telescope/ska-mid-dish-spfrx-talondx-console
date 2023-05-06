@@ -3,11 +3,11 @@
 import argparse
 import getpass
 import logging
+import tango
 import time
 
 from pytango_client_wrapper import PyTangoClientWrapper
-
-import PyTango as tango
+from tango import DeviceProxy
 
 MIN_BAND = 1
 MAX_BAND = 3
@@ -49,6 +49,140 @@ SPFRX_DEVICE_LIST = {
     "mbo-tx1": "mbo-tx1",
     "mbo-tx2": "mbo-tx2"
 }
+
+
+class bcolors:
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKCYAN = "\033[96m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    OK = "\x1b[6;30;42m"
+    FAIL = "\x1b[0;30;41m"
+    ENDC = "\x1b[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+
+
+def get_device_status(
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME,
+        ) -> None:
+    """
+    Reads and displays the state and status of each HPS Tango device
+    running on the Talon DX boards, as specified in the configuration
+    commands -- ref `"config_commands"` in the talondx-config JSON file.
+
+    :param config_commands: JSON array of configure commands
+    :type config_commands: str
+    """
+    logger_.info("================")
+    logger_.info(" Target: SFPRx")
+    logger_.info("================")
+
+    for dev_name in SPFRX_DEVICE_LIST:
+        try:
+            dev_proxy = DeviceProxy(getFqdn(dev_name, device, name))
+        except Exception as proxy_except:
+            logger_.info(
+                f"Error on DeviceProxy {dev_name}: {proxy_except}"
+            )
+            break
+        if dev_proxy.import_info().exported:
+            try:
+                ds_state = str(dev_proxy.state())
+                ds_status = dev_proxy.status()
+                logger_.info(
+                    f"{dev_name:<50}: state {ds_state:<8}  "
+                    f"status={ds_status}"
+                )
+            except Exception as status_except:
+                logger_.info(
+                    f"Error reading state or status of {dev_name}: "
+                    f"{status_except}"
+                )
+        else:
+            logger_.info(f"{dev_name}   DEVICE NOT EXPORTED!")
+
+
+def get_device_fqdn_list() -> list:
+    """
+    Get full list of fully-qualified device names (FQDNs) from the Tango
+    database, excluding "sys" and "dserver" names.
+
+    Ref: https://tango-controls.readthedocs.io/en/latest/
+    tutorials-and-howtos/how-tos/how-to-pytango.html
+
+    :returns: alphabetically-sorted list of FQDNs (str)
+    """
+    try:
+        db = tango.Database()
+    except Exception as db_except:
+        logger_.info(f"Database error: {db_except}")
+        exit()
+
+    instances = []
+    for server in db.get_server_list():
+        # Filter out the unwanted items from the list to get just the FQDNs
+        # of our devices... the full list from get_device_class_list() has
+        # the structure:
+        # [device name, class name, device name, class name, ...]
+        # and also includes the admin server (dserver/exec_name/instance)
+        instances += [
+            dev
+            for dev in db.get_device_class_list(server)
+            if "/" in dev
+            and not dev.startswith("dserver")
+            and not dev.startswith("sys")
+        ]
+
+    return sorted(instances)
+
+
+def get_device_version_info(
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME,
+        ) -> None:
+    """
+    Reads and displays the `dsVersionId`, `dsBuildDateTime`, and
+    `dsGitCommitHash` attributes of each HPS Tango device running
+    on the SPFRx Talon DX boards, as specified in the configuration
+    commands -- ref `"config_commands"` in the spfrx-config JSON file.
+
+    :param config_commands: JSON array of configure commands
+    :type config_commands: str
+    """
+    logger_.info("================")
+    logger_.info(" Target: SPFRx")
+    logger_.info("================")
+
+    for dev_name in SPFRX_DEVICE_LIST:
+        try:
+            dev_proxy = DeviceProxy(getFqdn(dev_name, device, name))
+
+            if dev_proxy.import_info().exported:
+                logger_.info(f"{dev_proxy.info().dev_class:<20}{dev_name}")
+                attr_names = [
+                    "dsVersionId",
+                    "dsBuildDateTime",
+                    "dsGitCommitHash",
+                ]
+                for attr_name in attr_names:
+                    try:
+                        attr_value = dev_proxy.read_attribute(attr_name)
+                        logger_.info(
+                            f"  {attr_value.name:<20}: {attr_value.value}"
+                        )
+                    except Exception as attr_except:
+                        logger_.info(
+                            f"Error reading attribute: {attr_except}"
+                        )
+            else:
+                logger_.info(f"{dev_name}   DEVICE NOT EXPORTED!")
+        except Exception as proxy_except:
+            logger_.info(
+                f"Error on DeviceProxy ({dev_name}): {proxy_except}"
+            )
 
 
 def getFqdn(alias: str,
@@ -404,7 +538,7 @@ if __name__ == "__main__":
         "-v",
         "--version",
         action="store_true",
-        help="Print version",
+        help="Print version information for this module.",
     )
     parser.add_argument(
         "-sync",
@@ -431,6 +565,24 @@ if __name__ == "__main__":
         help=f"Override the default FQDN name (default is {SPFRX_NAME})."
     )
     spfrx_action = parser.add_mutually_exclusive_group()
+    spfrx_action.add_argument(
+        "-vall",
+        "--version_tango_all",
+        action="store_true",
+        help="Print TANGO version information for all device servers.",
+    )
+    spfrx_action.add_argument(
+        "-fqdn",
+        "--fqdn_list_all",
+        action="store_true",
+        help="Print TANGO DB FQDN list.",
+    )
+    spfrx_action.add_argument(
+        "-status",
+        "--status_tango_all",
+        action="store_true",
+        help="Print TANGO Device status.",
+    )
     spfrx_action.add_argument(
         "-b",
         "--band",
@@ -530,6 +682,21 @@ if __name__ == "__main__":
         logger_.info(
             f"VERSION: {VERSION}"
         )
+
+    if args.version_tango_all:
+        logger_.info("Accessing version information for all Device Servers.")
+        get_device_version_info(
+            args.device,
+            args.name
+        )
+
+    if args.fqdn_list_all:
+        logger_.info("Accessing TANGO DB for full FQDN Device Server list.")
+        logger_.info(get_device_fqdn_list())
+
+    if args.status_tango_all:
+        logger_.info("Accessing status information for TANGO Device Servers")
+        get_device_status()
 
     if args.band is not None:
         logger_.info(

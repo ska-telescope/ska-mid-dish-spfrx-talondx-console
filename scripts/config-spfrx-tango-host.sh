@@ -23,10 +23,15 @@ display_usage() {
 # To run this script:
 #  make config-spfrx-tango-host
 
+spfrx_ip=${1}
+spfrx_namespace=${2}
+k8s_domain=${3}
+tango_port=${4}
+
 if [ $# -lt 4 ]
 then
     display_usage
     exit 1
 fi
 
-ssh root@$1 "export TANGO_HOST=$2.svc.$3:$4"
+ssh root@${spfrx_ip} "export TANGO_HOST=${spfrx_namespace}.svc.${k8s_domain}:${tango_port}"
