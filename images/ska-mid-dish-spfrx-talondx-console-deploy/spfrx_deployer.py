@@ -15,7 +15,7 @@ from conan_local.conan_wrapper import ConanWrapper
 from nrcdbpopulate.dbPopulate import DbPopulate
 from spfrx_config.talondx_config import TalonDxConfig
 
-LOG_FORMAT = "[spfrx-deployer.py: line %(lineno)s]%(levelname)s: %(message)s"
+LOG_FORMAT = "[spfrx_deployer.py: line %(lineno)s]%(levelname)s: %(message)s"
 
 
 class bcolors:
@@ -58,7 +58,7 @@ class Version:
 # POWER_SWITCH_PASS = os.environ.get("POWER_SWITCH_PASS")
 
 INTERNAL_BASE_DIR = "/app/images"
-OCI_IMAGE_NAME = "ska-mid-dish-spfrx-talondx-console-deployer"
+OCI_IMAGE_NAME = "ska-mid-dish-spfrx-talondx-console-deploy"
 CONFIG_FILE = "spfrx-config.json"
 BOARDMAP_FILE = "spfrx_boardmap.json"
 
@@ -249,7 +249,7 @@ def download_ds_binaries(ds_binaries, clear_conan_cache=True):
 
 if __name__ == "__main__":
     logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
-    logger_ = logging.getLogger("spfrx-deployer.py")
+    logger_ = logging.getLogger("spfrx_deployer.py")
     logger_.info(f"User: {getpass.getuser()}")
     parser = argparse.ArgumentParser(
         description="MID DISH SPFRx Talon-DX Deployer Utility"

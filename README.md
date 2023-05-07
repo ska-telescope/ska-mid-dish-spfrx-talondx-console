@@ -117,8 +117,6 @@ To see the generated documentation, open `/ska-mid-dish-spfrx-talondx-console/do
 firefox docs/build/html/index.html &
 ```
 
----
-
 
 
 

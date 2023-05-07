@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import argparse
 import getpass
 import logging
@@ -9,10 +8,10 @@ import matplotlib.pyplot as plt
 
 from pytango_client_wrapper import PyTangoClientWrapper
 
-matplotlib.use("TkAgg")
+# matplotlib.use("TkAgg")
 
 LOG_FORMAT = (
-    "[spfrx-spectrum-plotter.py: line %(lineno)s]%(levelname)s: %(message)s"
+    "[spfrx_spectrum_plotter.py: line %(lineno)s]%(levelname)s: %(message)s"
 )
 VERSION = "0.0.1"
 
@@ -493,7 +492,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.plotter_version:
-        logger_.info(f"spfrx-spectrum-plotter VERSION:{VERSION}")
+        logger_.info(f"spfrx_spectrum_plotter VERSION:{VERSION}")
         exit(0)
 
     sp = SpectrumPlotter(

@@ -43,4 +43,4 @@ RUN poetry export --format requirements.txt --output poetry-requirements.txt --w
     pip install -r poetry-requirements.txt && \
     rm poetry-requirements.txt
 
-CMD ./spfrx-plotter.py
+CMD ./spfrx_plotter.py
