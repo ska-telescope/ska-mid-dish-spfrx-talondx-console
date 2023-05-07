@@ -157,6 +157,16 @@ run-interactive: config-spfrx-tango-host ## Run docker in interactive mode
 	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
     $(strip $(OCI_IMAGE)):$(release) bash
 
+run-interactive-X11: # config-spfrx-tango-host ## Run docker in interactive mode
+	docker run --rm -it \
+	--network host \
+	--env DISPLAY \
+	--privileged \
+	--volume /tmp/.X11-unix:/tmp/.X11-unix \
+	--volume $(HOME)/.Xauthority:/home/tango/.Xauthority \
+	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
+    $(strip $(OCI_IMAGE)):$(release) bash
+
 config-db: config-spfrx-tango-host ## Configure the database
 	@echo Configuring Tango DB at $(SPFRX_TANGO_HOST) with Talon device servers...
 	@docker run --rm \

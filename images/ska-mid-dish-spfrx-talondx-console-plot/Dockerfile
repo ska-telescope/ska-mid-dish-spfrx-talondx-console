@@ -30,6 +30,10 @@ USER root
 # RUN update-ca-certificates
 ################################################################################
 
+# This is required to install tkinter properly for plotting
+RUN python3 -m pip uninstall -y numpy
+RUN apt-get update && apt-get install -y vim python3-tk
+
 # Poetry virtual environment not needed in Docker image
 RUN poetry config virtualenvs.create false
 

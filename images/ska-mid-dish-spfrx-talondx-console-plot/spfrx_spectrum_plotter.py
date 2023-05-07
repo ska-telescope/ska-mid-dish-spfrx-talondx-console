@@ -3,12 +3,14 @@ import argparse
 import getpass
 import logging
 import numpy as np
+import tkinter
+import matplotlib
 import matplotlib.animation as anim
 import matplotlib.pyplot as plt
 
 from pytango_client_wrapper import PyTangoClientWrapper
 
-# matplotlib.use("TkAgg")
+matplotlib.use("TkAgg")
 
 LOG_FORMAT = (
     "[spfrx_spectrum_plotter.py: line %(lineno)s]%(levelname)s: %(message)s"
