@@ -1,0 +1,17 @@
+{
+    "server" : "",
+    "instance" : "<server_instance>",
+    "name" : "",
+    "device" : "<device>",
+    "deviceList" : [
+        {
+            "class" : "",
+            "alias" : "",
+            "num" : ,
+            "id" : "<board_number",
+            "devprop" : {
+                "" : ,
+            }
+        }
+    ]
+}

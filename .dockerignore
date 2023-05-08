@@ -1,0 +1,19 @@
+# since we have to pass in the project directory as
+# the docker build context, we want to reduce the
+# number of unnecessary files in the docker image
+
+/automation
+/docs
+/mnt
+/scripts
+/tests
+.make
+.git*
+.pylintrc
+CODEOWNERS
+LICENSE
+Makefile
+README.md
+bite_client.txt
+ds_*
+setup.cfg
