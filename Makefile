@@ -208,7 +208,7 @@ spfrx: config-spfrx-tango-host ## SPFRx HPS Console application
 	--user tango \
 	$(strip $(OCI_IMAGE)):$(release) ./spfrx.py $(ARGS)
 
-spfrx-deploy: #config-spfrx-tango-host ## SFPRx HPS Deploy application
+spfrx-deploy: config-spfrx-tango-host ## SFPRx HPS Deploy application
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
