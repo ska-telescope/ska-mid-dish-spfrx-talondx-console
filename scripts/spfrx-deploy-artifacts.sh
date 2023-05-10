@@ -35,3 +35,5 @@ scp ${spfrx_local_dir}/ska-talondx-temperature-monitor-ds root@${spfrx_ip}:${spf
 
 scp ${spfrx_local_dir}/remote/spfrx-start.sh root@${spfrx_ip}:${spfrx_bin}/.
 scp ${spfrx_local_dir}/remote/spfrx-stop.sh root@${spfrx_ip}:${spfrx_bin}/.
+
+scp ${spfrx_local_dir}/remote/program-bitstream.sh root@${spfrx_ip}:${spfrx_bin}/.

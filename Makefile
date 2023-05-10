@@ -23,6 +23,8 @@ SPFRX_DEFAULT_LOGGING_LEVEL ?= 4
 SPFRX_BIN ?= /usr/local/bin
 TANGO_PORT ?= 10000
 QSFP_CONTROL_PATH ?= /usr/share/bittware/520nmx/cots/utilities/qsfp_control/bin
+FAN_SPEED ?= 255
+HWMON ?= 1
 
 # RELEASE_NAME is the release that all Kubernetes resources will be labelled
 # with
@@ -124,6 +126,24 @@ spfrx-stop: config-spfrx-tango-host ## Stop SPFRx TANGO device servers
 spfrx-qsfp-hi-power: ## Set local Bittware to hi-power mode
 	@. scripts/spfrx-host-qsfp-hipower.sh ${QSFP_CONTROL_PATH}
 
+# Call the scripts/spfrx-get-fanspeed.sh script
+#  This will return PWM fan settings for fans 1, 2 and 3
+#  use HWMON=# to provide the hwmon index if required (default HWMON is 1)
+spfrx-get-fanspeed: ## Retrieve fan speed settings for RXPU
+	@. scripts/spfrx-get-fanspeed.sh ${SPFRX_ADDRESS} ${HWMON}
+
+# Call the scripts/spfrx-set-fanspeed.sh script
+#  This will return PWM fan settings for fans 1, 2 and 3
+#  use FAN_SPEED=### to indicate the speed 
+#  use HWMON=# to provide the hwmon index if required (default HWMON is 1)
+spfrx-set-fanspeed: ## Set fan speed settings for RXPU
+	@. scripts/spfrx-set-fanspeed.sh ${SPFRX_ADDRESS} ${FAN_SPEED} ${HWMON}
+
+# Call the scripts/program-bitstream-remote script
+#  This will program the bitstream remotely on the SPFRx TALON-DX HPS
+spfrx-program-bitstream: ## Remotely configure the SPFRx FPGA
+	@. scripts/program-bitstream.sh ${TAR_ARCHIVE} ${SPFRX_ADDRESS}
+
 ARTIFACTS_POD = $(shell kubectl -n $(KUBE_NAMESPACE) get pod --no-headers --selector=vol=artifacts-admin -o custom-columns=':metadata.name')
 
 x-jive: config-tango-dns  config-spfrx-tango-host ## Run Jive with X11
@@ -157,7 +177,7 @@ run-interactive: config-spfrx-tango-host ## Run docker in interactive mode
 	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
     $(strip $(OCI_IMAGE)):$(release) bash
 
-run-interactive-X11: # config-spfrx-tango-host ## Run docker in interactive mode
+run-interactive-X11: config-spfrx-tango-host ## Run docker in interactive mode
 	docker run --rm -it \
 	--network host \
 	--env DISPLAY \

@@ -15,6 +15,8 @@ MAX_ATTEN = 31.75
 POL_H = 0
 POL_V = 1
 POLS = ("H", "V")
+ND_MODE = ("OFF", "PERIODIC", "PSEUDO-RANDOM")
+ND_STATE = ("UNKNOWN", "ENABLED", "DISABLED")
 
 SPFRX_DEVICE = "ska001"
 SPFRX_NAME = "spfrxpu"
@@ -184,10 +186,11 @@ def get_device_version_info(
             )
 
 
-def getFqdn(alias: str,
-            device: str = SPFRX_DEVICE,
-            name: str = SPFRX_NAME,
-            ) -> str:
+def getFqdn(
+        alias: str,
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME,
+        ) -> str:
     """
     Construct the TANGO FQDN from supplied string values in the following form:
     device/name/alias
@@ -200,7 +203,9 @@ def getFqdn(alias: str,
     return f"{device}/{name}/{alias}"
 
 
-def validateBand(band: int) -> bool:
+def validateBand(
+        band: int
+        ) -> bool:
     """
     Validate the provided band value to be within the allowable integer range
 
@@ -218,7 +223,9 @@ def validateBand(band: int) -> bool:
     return False
 
 
-def validateAtten(atten: float) -> bool:
+def validateAtten(
+        atten: float
+        ) -> bool:
     """
     Validate the provided attenuator value
 
@@ -238,9 +245,11 @@ def validateAtten(atten: float) -> bool:
     return False
 
 
-def getConfiguredAtten(band: int,
-                       device: str = SPFRX_DEVICE,
-                       name: str = SPFRX_NAME) -> tuple:
+def getConfiguredAtten(
+        band: int,
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> tuple:
     """
     Retrieve the currently configured band attenuation values from the SPFRx
 
@@ -271,8 +280,10 @@ def getConfiguredAtten(band: int,
     return (0.0, 0.0)
 
 
-def getConfiguredBand(device: str = SPFRX_DEVICE,
-                      name: str = SPFRX_NAME) -> int:
+def getConfiguredBand(
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> int:
     """
     Retrieves the currently configured SPFRx band ID
 
@@ -296,9 +307,11 @@ def getConfiguredBand(device: str = SPFRX_DEVICE,
         return 0
 
 
-def configureBand(band: int, synchronize: bool,
-                  device: str = SPFRX_DEVICE,
-                  name: str = SPFRX_NAME) -> bool:
+def configureBand(
+        band: int, synchronize: bool,
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> bool:
     """
     Attempts to configure the specified band ID in the SPFRx
 
@@ -358,11 +371,13 @@ def configureBand(band: int, synchronize: bool,
         return False
 
 
-def configureAtten(band: int,
-                   pol: int,
-                   atten: float,
-                   device: str = SPFRX_DEVICE,
-                   name: str = SPFRX_NAME) -> bool:
+def configureAtten(
+        band: int,
+        pol: int,
+        atten: float,
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> bool:
     """
     Configure the SPFRx Attenuation values for a specified polarization
 
@@ -409,11 +424,14 @@ def configureAtten(band: int,
     return False
 
 
-def invertSpectralSense(sense: bool = True,
-                        device: str = SPFRX_DEVICE,
-                        name: str = SPFRX_NAME) -> bool:
+def invertSpectralSense(
+        band: int,
+        sense: bool = True,
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> bool:
     """
-    Invert the spectral sense
+    Invert the spectral sense by writing directly to firmware.
 
     :param sense: True to invert (default), False to revert to original config
     :param device: Optional - TANGO FQDN Device (defaults to SPFRX_DEVICE)
@@ -421,96 +439,181 @@ def invertSpectralSense(sense: bool = True,
     :returns: True on success.
     """
 
-    spfrx_bp12 = PyTangoClientWrapper()
-    spfrx_bp12.create_tango_client(
-        getFqdn(SPFRX_DEVICE_LIST["bp12"], device, name)
-    )
-    spfrx_bp12.set_timeout_millis(5000)
+    spfrx_bp = PyTangoClientWrapper()
+    if (band == 1) or (band ==2):
+        spfrx_bp.create_tango_client(
+            getFqdn(SPFRX_DEVICE_LIST["bp12"], device, name)
+        )
+    if (band == 3):
+        spfrx_bp.create_tango_client(
+            getFqdn(SPFRX_DEVICE_LIST["bp3"], device, name)
+        )
 
-    spfrx_bp3 = PyTangoClientWrapper()
-    spfrx_bp12.create_tango_client(
-        getFqdn(SPFRX_DEVICE_LIST["bp3"], device, name)
-    )
-    spfrx_bp3.set_timeout_millis(5000)
-
+    spfrx_bp.set_timeout_millis(5000)
     attr = "spec_inv"
 
     try:
-        spfrx_bp12.write_attribute(attr, int(sense))
+        spfrx_bp.write_attribute(attr, int(sense))
     except tango.DevFailed:
         tango.Except.throw_exception(
-            f"UNABLE TO WRITE TO {attr} on bandprocessor123-0",
-            f"invertSpectralSense({sense})",
-        )
-        return False
-
-    try:
-        spfrx_bp3.write_attribute(attr, int(not sense))
-    except tango.DevFailed:
-        tango.Except.throw_exception(
-            f"UNABLE TO WRITE TO {attr} on bandprocessor123-1",
-            f"invertSpectralSense({sense})",
+            f"UNABLE TO WRITE TO {attr} on band {band}",
+            f"invertSpectralSense({band}, {sense})",
         )
         return False
 
     return True
 
 
-def setFanPwm(value: int,
-              device: str = SPFRX_DEVICE,
-              name: str = SPFRX_DEVICE) -> bool:
+def enableNoiseDiode(
+        enable: bool,
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> bool:
     """
-    Set the fan speed
-
-    :param value: new fan pwm value [0-255]
-    :param device: Optional - TANGO FQDN Device (defaults to SPFRX_DEVICE)
-    :param name: Optional - TANGO FQDN Name (defaults to SPFRX_NAME)
-    :returns: True on success.
-    """
-
-    if value < 100:
-        logger_.warning(f"Overriding low fan speed {value}/255 -> 100/255.")
-        value = 100
-    if value > 255:
-        logger_.info("Maximum fan speed is 255/255. Setting to MAX.")
-        value = 255
-
-    spfrx_fan = PyTangoClientWrapper()
-    spfrx_fan.create_tango_client(
-        getFqdn(SPFRX_DEVICE_LIST["fan"], device, name)
-    )
-    spfrx_fan.set_timeout_millis(5000)
-    # set the fan speed
-
-
-def configureNoiseDiode(enable: bool,
-                        duty: int,
-                        period: int,
-                        device: str = SPFRX_DEVICE,
-                        name: str = SPFRX_NAME) -> bool:
-    """
-    Configure the noise diode
+    Enable/Disable the noise diode
 
     :param enable: True to enable, False to disable.
                    duty & period ignored if disabling
-    :param duty: The noise diode duty cycle
-    :param period: The noise diode period
     :param device: Optional - TANGO FQDN Device (defaults to SPFRX_DEVICE)
     :param name: Optional - TANGO FQDN Name (defaults to SPFRX_NAME)
     :returns: True on success.
     """
 
-    spfrx_bp12 = PyTangoClientWrapper()
-    spfrx_bp12.create_tango_client(
-        getFqdn(SPFRX_DEVICE_LIST["bp12"], device, name)
+    spfrx_ctrl = PyTangoClientWrapper()
+    spfrx_ctrl.create_tango_client(
+        getFqdn(SPFRX_DEVICE_LIST["ctrl"], device, name)
     )
-    spfrx_bp12.set_timeout_millis(5000)
-    # configure the noise diode
+    spfrx_ctrl.set_timeout_millis(5000)
+
+    try:
+        spfrx_ctrl.command_read_write("SetNoiseDiodeState", enable)
+        return True
+    except tango.DevFailed:
+        tango.Except.throw_exception(
+            "UNABLE TO EXECUTE COMMAND on controller",
+            f"SetNoiseDiodeState({enable})",
+        )
+        return False
 
 
-def enableSpectrometer(enable: bool,
-                       device: str = SPFRX_DEVICE,
-                       name: str = SPFRX_NAME) -> bool:
+def getNoiseDiodeConfig(
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> None:
+    """
+    Retrieve and display noise diode control parameters
+
+    :param device: Optional - TANGO FQDN Device (defaults to SPFRX_DEVICE)
+    :param name: Optional - TANGO FQDN Name (defaults to SPFRX_NAME)
+    """
+
+    spfrx_ctrl = PyTangoClientWrapper()
+    spfrx_ctrl.create_tango_client(
+        getFqdn(SPFRX_DEVICE_LIST["ctrl"], device, name)
+    )
+    spfrx_ctrl.set_timeout_millis(5000)
+
+    try:
+        atts = spfrx_ctrl.read_attributes(
+            [
+                "noiseDiodeState",
+                "noiseDiodeMode",
+                "periodicNoiseDiodePars",
+                "pseudoRandomNoiseDiodePars"
+            ]
+        )
+        if atts is not None:
+            if atts[1].value == 1:
+                config = f" Period : {atts[2][0]}\n"
+                config += f" Duty Cycle : {atts[2][1]}\n"
+                config += f" Phase Shift : {atts[2][2]}"
+            elif atts[1].value == 2:
+                config = f" Binary Polynomial : {atts[3][0]}\n"
+                config += f" Seed : {atts[3][1]}\n"
+                config += f" Dwell : {atts[3][2]}"
+            else:
+                config = "N/A"
+            logger_.info(
+                "Noise Diode configuration:\n"
+                f" Mode : {ND_MODE[atts[1].value]}\n"
+                f" State : {ND_STATE[atts[0].value]}\n"
+                f" Config : {config}"
+            )
+
+    except tango.DevFailed:
+        tango.Except.throw_exception(
+            "UNABLE TO RETRIEVE ATTRIBUTE VALUES"
+        )
+        return False
+
+
+def configureNoiseDiode(
+        values: list[int],
+        attr: str,
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> bool:
+    """
+    Configure the noise diode parameters after setting the
+    SPFRx into standby mode
+
+    :param values: A 3-integer array containing parameters for
+                   the desired noise diode configuration type
+    :param attr: The attribute string to write values to
+                (Must be either 'periodic' or 'pseudoRandom')
+    :param device: Optional - TANGO FQDN Device (defaults to SPFRX_DEVICE)
+    :param name: Optional - TANGO FQDN Name (defaults to SPFRX_NAME)
+    :returns: True on success.
+    """
+
+    spfrx_ctrl = PyTangoClientWrapper()
+    spfrx_ctrl.create_tango_client(
+        getFqdn(SPFRX_DEVICE_LIST["ctrl"], device, name)
+    )
+    spfrx_ctrl.set_timeout_millis(5000)
+
+    try:
+        logger_.info("Setting SPFRx into STANDBY mode")
+        spfrx_ctrl.command_read_write("SetStandbyMode")
+        time.sleep(3)
+
+        spfrx_ctrl.write_attribute(
+            f"{attr}NoiseDiodePars",
+            values
+            )
+    except tango.DevFailed:
+        tango.Except.throw_exception(
+            f"UNABLE TO WRITE TO {attr}NoiseDiodePars on controller",
+            f"configureNoiseDiode({values},{attr},{device},{name})",
+        )
+        return False
+
+
+def configureNoiseDiodePeriodic(
+        values: list[int],
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> bool:
+    return configureNoiseDiode(
+        values, "periodicNoiseDiodePars", device, name
+    )
+
+
+def configureNoiseDiodePseudoRandom(
+        values: list[int],
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> bool:
+    return configureNoiseDiode(
+        values, "pseudoRandomNoiseDiodePars", device, name
+    )
+
+
+def enableSpectrometer(
+        enable: bool,
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> bool:
     """
     Enable or disable the spectrometer
 
@@ -520,12 +623,52 @@ def enableSpectrometer(enable: bool,
     :returns: True on success.
     """
 
-    spfrx_bp12 = PyTangoClientWrapper()
-    spfrx_bp12.create_tango_client(
-        getFqdn(SPFRX_DEVICE_LIST["bp12"], device, name)
+    spfrx_ctrl = PyTangoClientWrapper()
+    spfrx_ctrl.create_tango_client(
+        getFqdn(SPFRX_DEVICE_LIST["ctrl"], device, name)
     )
-    spfrx_bp12.set_timeout_millis(5000)
-    # enable or disable the spectrometer
+    spfrx_ctrl.set_timeout_millis(5000)
+
+    try:
+        spfrx_ctrl.command_read_write("SpectrometerCtrl", enable)
+        return True
+    except tango.DevFailed:
+        tango.Except.throw_exception(
+            "UNABLE TO EXECUTE COMMAND on controller",
+            f"SpectrometerCtrl({enable})",
+        )
+        return False
+
+
+def setSpectrometerBridge(
+        bridge: int,
+        device: str = SPFRX_DEVICE,
+        name: str = SPFRX_NAME
+        ) -> bool:
+    """
+    Set the FPGA bridge to use with the Gated Spectrometer.
+
+    :param bridge: Provide '1' for LW bridge, '0' for HP bridge
+    :param device: Optional - TANGO FQDN Device (defaults to SPFRX_DEVICE)
+    :param name: Optional - TANGO FQDN Name (defaults to SPFRX_NAME)
+    :returns: True on success.
+    """
+
+    spfrx_pktcap = PyTangoClientWrapper()
+    spfrx_pktcap.create_tango_client(
+        getFqdn(SPFRX_DEVICE_LIST["pktcap"], device, name)
+    )
+    spfrx_pktcap.set_timeout_millis(5000)
+
+    try:
+        spfrx_pktcap.command_read_write("spectrometer_set_bridge", bridge)
+        return True
+    except tango.DevFailed:
+        tango.Except.throw_exception(
+            "UNABLE TO EXECUTE COMMAND on controller",
+            f"spectrometer_set_bridge({bridge})",
+        )
+        return False
 
 
 if __name__ == "__main__":
@@ -641,30 +784,50 @@ if __name__ == "__main__":
     spfrx_action.add_argument(
         "-inv",
         "--invert_spectral_sense",
-        action="store_true",
-        help="Invert spectral sense.",
+        type=int,
+        metavar="BAND_ID",
+        help="Invert spectral sense for the specified band.",
     )
     spfrx_action.add_argument(
         "-rev",
         "--revert_spectral_sense",
-        action="store_true",
-        help="Revert spectral sense.",
+        type=int,
+        metavar="BAND_ID",
+        help="Revert spectral sense for the specified band.",
     )
     spfrx_action.add_argument(
-        "-nd",
-        "--noise_diode_config",
+        "-nde",
+        "--noise_diode_enable",
+        type=int,
+        metavar="ENABLE_STATE",
+        help="Enable/Disable the Noise Diode. "
+             + "Provide 0 (disable) or 1 (enable as first arg)",
+    )
+    spfrx_action.add_argument(
+        "-ndc",
+        "--noise_diode_current_config",
+        action="store_true",
+        help="Retrieve and display current noise diode configuration.",
+    )
+    spfrx_action.add_argument(
+        "-ndcp",
+        "--noise_diode_periodic_config",
         type=int,
         nargs=3,
-        metavar=("ENABLE", "PWM_DUTY_CYCLE", "PWM_PERIOD"),
-        help="Configure the Noise Diode. " +
-             "Provide 0 (disable) or 1 (enable as first arg)",
+        metavar=("PWM_PERIOD", "PWM_DUTY_CYCLE", "PWM_PHASE_SHIFT"),
+        help="Provide periodic noise diode configuration parameters."
+             + "Note that invoking this command will put SPFRx "
+             + "into standby mode.",
     )
     spfrx_action.add_argument(
-        "-f",
-        "--set_fan_pwm",
+        "-ndcr",
+        "--noise_diode_random_config",
         type=int,
-        metavar="FAN_PWM",
-        help="Set the fan pwm value [100-255].",
+        nargs=3,
+        metavar=("PRM_BINARY_POLYNOMIAL", "PRM_SEED", "PRM_DWELL"),
+        help="Provide pseudo-random noise diode configuration "
+             + "parameters. Note that invoking this command will "
+             + "put SPFRx into standby mode.",
     )
     spfrx_action.add_argument(
         "-sp",
@@ -673,6 +836,14 @@ if __name__ == "__main__":
         metavar="SPECTROMETER_STATE",
         help="Provide 1 to enable, 0 to disable spectrometer.",
     )
+    spfrx_action.add_argument(
+        "-bridge",
+        "--spectrometer_set_bridge",
+        type=int,
+        metavar="SPECTROMETER_BRIDGE",
+        help="1 to configure LW bridge, 0 to configure HP bridge.",
+    )
+
     args = parser.parse_args()
 
     if args.version:
@@ -783,72 +954,115 @@ if __name__ == "__main__":
         )
 
     if args.invert_spectral_sense:
+        band = args.invert_spectral_sense
         logger_.info(
-            "Inverting spectral sense."
+            "Inverting spectral sense for band {band}."
         )
-        if invertSpectralSense(args.device, args.name):
-            logger_.info("Spectral sense inversion SUCCESSFUL")
+        if (band > 0) and (band < 4):
+            if invertSpectralSense(band, True, args.device, args.name):
+                logger_.info("Spectral sense inversion band {band} SUCCESSFUL")
+            else:
+                logger_.warning("Spectral sense inversion band {band} FAILED")
         else:
-            logger_.warning("Spectral sense inversion FAILED")
+            logger_.waring(f"Improper band specification ({band}). "
+                           "Band must be 1, 2 or 3")
 
     if args.revert_spectral_sense:
+        band = args.invert_spectral_sense
         logger_.info(
-            "Reverting spectral sense."
+            "Reverting spectral sense for band {band}."
         )
-        if invertSpectralSense(False, args.device, args.name):
-            logger_.info("Spectral sense reverted SUCCESSFULLY")
+        if (band > 0) and (band < 4):
+            if invertSpectralSense(band, False, args.device, args.name):
+                logger_.info("Spectral sense reverted band {band} SUCCESSFULLY")
+            else:
+                logger_.warning("Spectral sense reversion band {band} FAILED")
         else:
-            logger_.warning("Spectral sense reversion FAILED")
+            logger_.waring(f"Improper band specification ({band}). "
+                           "Band must be 1, 2 or 3")
 
-    if args.set_fan_pwm is not None:
+    if args.noise_diode_enable:
         logger_.info(
-            f"Setting fan speed to {args.set_fan_pwm}"
+            f"{'Enabling' if args.noise_diode_enable == 1 else 'Disabling'} "
+            "noise diode."
         )
-        if setFanPwm(args.set_fan_pwm, args.device, args.name):
-            logger_.info("Fan speed setting SUCCESSFUL")
+        if enableNoiseDiode(args.noise_diode_enable,
+                            args.device,
+                            args.name
+                            ):
+            logger_.info(
+                f"Noise diode state configured SUCCESSFULLY "
+                f"{'ENABLED' if args.noise_diode_enable == 1 else 'DISABLED'}."
+            )
         else:
-            logger_.warning("Fan speed setting FAILED")
+            logger_.warning("Noise diode configuration FAILED.")
 
-    if args.noise_diode_config is not None:
-        if args.noise_diode_config[0] != 0:
-            logger_.info(f"Enabling noise diode "
-                         f"DUTY:{args.noise_diode_config[1]} "
-                         f"PERIOD:{args.noise_diode_config[2]}"
-                         )
-            if configureNoiseDiode(True,
-                                   args.noise_diode_config[1],
-                                   args.noise_diode_config[2],
-                                   args.device,
-                                   args.name
-                                   ):
-                logger_.info(f"Noise diode configured SUCCESSFULLY "
-                             f"DUTY:{args.noise_diode_config[1]} "
-                             f"PERIOD:{args.noise_diode_config[2]}")
-            else:
-                logger_.warning("Noise diode configuration FAILED.")
-        else:
-            logger_.info("Disabling noise diode")
-            if configureNoiseDiode(False, 0, 0,
-                                   device=args.device,
-                                   name=args.name
-                                   ):
-                logger_.info("Noise diode DISABLED")
-            else:
-                logger_.warning("Problem whilc disabling noise diode")
+    if args.noise_diode_current_config:
+        logger_.info(
+            "Retrieving current Noise Diode configuration parameters."
+        )
+        getNoiseDiodeConfig(
+            args.device,
+            args.name
+        )
 
-    if args.spectrometer_enable == 0:
-        logger_.info("Disabling spectrometer.")
-        if enableSpectrometer(False, args.device, args.name):
-            logger_.info("Spectrometer DISABLED.")
+    if args.noise_diode_periodic_config:
+        logger_.info(
+            f"Configuring Periodic Noise Diode parameters:\n"
+            f"  PWM Period : {args.noise_diode_periodic_config[0]}\n"
+            f"  PWM Duty Cycle : {args.noise_diode_periodic_config[1]}\n"
+            f"  PWM Phase Shift : {args.noise_diode_periodic_config[2]}"
+        )
+        if configureNoiseDiodePeriodic(
+             args.noise_diode_periodic_config,
+             args.device,
+             args.name
+        ):
+            logger_.info("SUCCESS")
         else:
-            logger_.warning("Problem while disabling spectrometer.")
+            logger_.warning("FAILED")
 
-    if args.spectrometer_enable == 1:
-        logger_.info("Enabling spectrometer.")
-        if enableSpectrometer(True, args.device, args.name):
-            logger_.info("Spectrometer ENABLED.")
+    if args.noise_diode_random_config:
+        logger_.info(
+            f"Configuring Pseudo-Random Noise Diode parameters:\n"
+            f"  PRM Binary Polynomial : {args.noise_diode_random_config[0]}\n"
+            f"  PRM Seed : {args.noise_diode_random_config[1]}\n"
+            f"  PRM Dwell : {args.noise_diode_random_config[2]}"
+        )
+        if configureNoiseDiodePseudoRandom(
+             args.noise_diode_random_config,
+             args.device,
+             args.name
+        ):
+            logger_.info("SUCCESS")
         else:
-            logger_.warning("Problem while enabling spectrometer.")
+            logger_.warning("FAILED")
+
+    if args.spectrometer_enable:
+        logger_.info(
+            f"{'Enabl' if args.spectrometer_enable == 1 else 'Disabl'}ing "
+            "spectrometer."
+            )
+        if enableSpectrometer(args.spectrometer_enable,
+                              args.device,
+                              args.name):
+            logger_.info("SUCCESS")
+        else:
+            logger_.warning("FAILED")
+
+    if args.spectrometer_set_bridge:
+        logger_.info(
+            f"Setting {'LW' if args.spectrometer_set_bridge == 1 else 'HP'} "
+            "bridge."
+        )
+        if setSpectrometerBridge(
+            args.spectrometer_set_bridge,
+            args.device,
+            args.name
+        ):
+            logger_.info("SUCCESS")
+        else:
+            logger_.info("FAILED")
 
     else:
         logger_.info("Hello from Mid DISH SPFRx Console")
