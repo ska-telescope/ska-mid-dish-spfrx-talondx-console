@@ -15,7 +15,9 @@ from conan_local.conan_wrapper import ConanWrapper
 from nrcdbpopulate.dbPopulate import DbPopulate
 from spfrx_config.talondx_config import TalonDxConfig
 
-LOG_FORMAT = "[spfrx_deployer.py: line %(lineno)s]%(levelname)s: %(message)s"
+LOG_FORMAT = (
+    "[spfrx_deployer.py: line %(lineno)s]%(levelname)s: %(message)s"
+)
 
 
 class bcolors:
@@ -113,7 +115,9 @@ def generate_spfrx_config():
         spfrx_config_file.close()
 
 
-def configure_db(inputjson):
+def configure_db(
+        inputjson
+        ) -> None:
     """
     Helper function for configuring DB entries using the dbpopulate module.
     """
@@ -140,7 +144,9 @@ def configure_db(inputjson):
         dbpop.process(mode="add")
 
 
-def configure_tango_db(tango_db):
+def configure_tango_db(
+        tango_db
+        ):
     """
     Configure the Tango DB with devices specified in the talon-config
     JSON file.
@@ -152,7 +158,10 @@ def configure_tango_db(tango_db):
     configure_db(inputjson=tango_db.get("db_servers", ""))
 
 
-def download_git_artifacts(git_api_url, name):
+def download_git_artifacts(
+        git_api_url, 
+        name
+        ):
     response = requests.head(url=git_api_url, headers=GITLAB_API_HEADER)
 
     if response.status_code == requests.codes.ok:  # pylint: disable=no-member
@@ -193,7 +202,10 @@ def download_git_artifacts(git_api_url, name):
         )
 
 
-def download_ds_binaries(ds_binaries, clear_conan_cache=True):
+def download_ds_binaries(
+        ds_binaries, 
+        clear_conan_cache=True
+        ):
     """
     Downloads and extracts Tango device server (DS) binaries from
     Conan packages or Git pipeline artifacts.

@@ -3,6 +3,7 @@ import argparse
 import getpass
 import logging
 import numpy as np
+import tango
 import tkinter
 import matplotlib
 import matplotlib.animation as anim
@@ -53,16 +54,18 @@ class SpectrumPlotter:
     _update_interval: int
     _mag: bool
 
-    def __init__(self,
-                 throttle_interval: int,
-                 n_packets: int,
-                 update_interval: int,
-                 mag: bool,
-                 device: str = SPFRX_DEVICE,
-                 name: str = SPFRX_NAME,
-                 ctrl: str = SPFRX_CTRL_ALIAS,
-                 pktcap: str = SPFRX_PKTCAP_ALIAS,
-                 test_mode: bool = False) -> None:
+    def __init__(
+            self,
+            throttle_interval: int,
+            n_packets: int,
+            update_interval: int,
+            mag: bool,
+            device: str = SPFRX_DEVICE,
+            name: str = SPFRX_NAME,
+            ctrl: str = SPFRX_CTRL_ALIAS,
+            pktcap: str = SPFRX_PKTCAP_ALIAS,
+            test_mode: bool = False
+            ) -> None:
         """
         Initialize the plot object
 
@@ -106,7 +109,10 @@ class SpectrumPlotter:
 
         self.plotInit()
 
-    def getFqdn(self, alias: str) -> str:
+    def getFqdn(
+            self, 
+            alias: str
+            ) -> str:
         """
         Construct the TANGO FQDN from supplied string values in the
         following form:
@@ -120,7 +126,9 @@ class SpectrumPlotter:
         """
         return f"{self._device}/{self._name}/{alias}"
 
-    def plotInit(self):
+    def plotInit(
+            self
+            ):
         """
         Initialize the plot object
         """
@@ -130,22 +138,37 @@ class SpectrumPlotter:
         spfrx_pktcap.create_tango_client(self.getFqdn(self._pktcap))
         spfrx_pktcap.set_timeout_millis(5000)
 
-        if not self._test_mode:
-            spfrx_pktcap.write_attribute(
-                "spectrometer_throttle_interval",
-                self._throttle_interval
-            )
-            spfrx_pktcap.write_attribute(
-                "spectrometer_num_packets",
-                self._n_packets
-            )
+        logger_.info("Configuring Spectrometer pktcap to use LW bridge...")
+        try:
+            spfrx_pktcap.command_read_write("spectrometer_set_bridge", 1)
+        except tango.DevFailed:
+            tango.Except.throw_exception(
+                "UNABLE TO SET LW BRIDGE MODE")
+            exit(1)
+
+        try:
+            if not self._test_mode:
+                spfrx_pktcap.write_attribute(
+                    "spectrometer_throttle_interval",
+                    self._throttle_interval
+                )
+                spfrx_pktcap.write_attribute(
+                    "spectrometer_num_packets",
+                    self._n_packets
+                )
+        except tango.DevFailed:
+            tango.Except.throw_exception(
+                "UNABLE TO CONFIGURE PKTCAP PARAMETERS")
+            exit(1)
 
         fig = self.createPlot()
 
         anim.FuncAnimation(fig, self.update, frames=1, repeat=True)
         plt.show()
 
-    def createPlot(self) -> plt.Figure:
+    def createPlot(
+            self
+            ) -> plt.Figure:
         """
         Create the matplotlib Figure object
         """
@@ -162,7 +185,9 @@ class SpectrumPlotter:
 
         return fig
 
-    def update(self) -> None:
+    def update(
+            self
+            ) -> None:
         """
         Update the data within the plot.
         """
@@ -178,26 +203,30 @@ class SpectrumPlotter:
         attH = ""
         attV = ""
 
-        if self._test_mode:
-            self._raw = range(8202)
-        else:
-            spfrx_pktcap.command_read_write(
-                "spectrometer_retrieve_result",
-                None
-            )
-            self._raw = spfrx_pktcap.read_attribute(
-                "spectrometer_spectrum_result"
-            )
-            attH = spfrx_ctrl.read_attribute(
-                "attenuationPolH"
-            )
-            attV = spfrx_ctrl.read_attribute(
-                "attenuationPolV"
-            )
-            if attH is None:
-                attH = -1
-            if attV is None:
-                attV = -1
+        try:
+            if self._test_mode:
+                self._raw = range(8202)
+            else:
+                spfrx_pktcap.command_read_write(
+                    "spectrometer_retrieve_result",
+                    None
+                )
+                self._raw = spfrx_pktcap.read_attribute(
+                    "spectrometer_spectrum_result"
+                )
+                attH = spfrx_ctrl.read_attribute(
+                    "attenuationPolH"
+                )
+                attV = spfrx_ctrl.read_attribute(
+                    "attenuationPolV"
+                )
+                if attH is None:
+                    attH = -1
+                if attV is None:
+                    attV = -1
+        except tango.DevFailed:
+            tango.Except.throw_exception(
+                "UNABLE TO READ FROM PKTCAP")
 
         timestamp = self.parseData()
         self.updatePlot(timestamp, attH, attV)
@@ -206,7 +235,9 @@ class SpectrumPlotter:
             spfrx_ctrl.command_read_write("MonitorPing")
         plt.pause(self._update_interval / 1000)
 
-    def parseData(self) -> int:
+    def parseData(
+            self
+            ) -> int:
         """
         Parse the raw spectrometer data.
 
@@ -234,10 +265,12 @@ class SpectrumPlotter:
 
         return timestamp
 
-    def updatePlot(self,
-                   timestamp: int,
-                   attH: float = -1,
-                   attV: float = -1) -> None:
+    def updatePlot(
+            self,
+            timestamp: int,
+            attH: float = -1,
+            attV: float = -1
+            ) -> None:
         """
         Update the plot figure object.
         """
@@ -248,8 +281,12 @@ class SpectrumPlotter:
 
         mag = self._mag
 
-        kvalue = spfrx_ctrl.read_attribute("kValue")
-        band = spfrx_ctrl.read_attribute("configuredBand")
+        try:
+            kvalue = spfrx_ctrl.read_attribute("kValue")
+            band = spfrx_ctrl.read_attribute("configuredBand")
+        except tango.DevFailed:
+            tango.Except.throw_exception(
+                "UNABLE TO READ FROM CONTROLLER")
 
         if band == 3:
             range_low = (3.168e9 + (kvalue * 1440)) / 2 / 1e6
