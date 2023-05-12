@@ -673,7 +673,7 @@ def setSpectrometerBridge(
 
 if __name__ == "__main__":
     logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
-    logger_ = logging.getLogger("spfrx-talondx.py")
+    logger_ = logging.getLogger("spfrx.py")
     logger_.info(f"User: {getpass.getuser()}")
     parser = argparse.ArgumentParser(description="MID DISH SPFRx Console Ops.")
     parser.add_argument(

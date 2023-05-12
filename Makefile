@@ -220,7 +220,7 @@ talon-status: config-spfrx-tango-host ## Display SPFRx TANGO device server statu
 	--env TERM=xterm \
 	$(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-status
 
-spfrx: config-spfrx-tango-host ## SPFRx HPS Console application
+spfrx: config-spfrx-tango-host ## SPFRx HPS Console application. Provide ARGS env var on command line.
 	@echo $(Arguments) & \
 	docker run --rm \
 	--network host \
@@ -228,14 +228,22 @@ spfrx: config-spfrx-tango-host ## SPFRx HPS Console application
 	--user tango \
 	$(strip $(OCI_IMAGE)):$(release) ./spfrx.py $(ARGS)
 
-spfrx-deploy: config-spfrx-tango-host ## SFPRx HPS Deploy application
+spfrx-sat-pll: #config-spfrx-tango-host ## SPFRx HPS SAT-PLL Console application. Provide ARGS env var on command line.
+	@echo $(Arguments) & \
+	docker run --rm \
+	--network host \
+	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
+	--user tango \
+	$(strip ${OCI_IMAGE}):$(release) ./spfrx_sat_pll.py $(ARGS)
+
+spfrx-deploy: config-spfrx-tango-host ## SFPRx HPS Deploy application. Provide ARGS env var on command line
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
 	--user tango \
 	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py $(ARGS)
 
-spfrx-plotter: config-spfrx-tango-host ## SPFRx Gated Spectrometer GUI application
+spfrx-plotter: config-spfrx-tango-host ## SPFRx Gated Spectrometer GUI application. Provide ARGS env var on command line
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
