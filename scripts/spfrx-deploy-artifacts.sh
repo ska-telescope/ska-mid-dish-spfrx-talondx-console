@@ -28,12 +28,12 @@ then
     exit 1
 fi
 
-scp ${spfrx_local_dir}/ska-mid-spfrx-controller-ds root@${spfrx_ip}:${spfrx_bin}/.
-scp ${spfrx_local_dir}/ska-mid-spfrx-system-ds root@${spfrx_ip}:${spfrx_bin}/.
-scp ${spfrx_local_dir}/ska-talondx-bsp-ds root@${spfrx_ip}:${spfrx_bin}/.
-scp ${spfrx_local_dir}/ska-talondx-temperature-monitor-ds root@${spfrx_ip}:${spfrx_bin}/.
+scp ${spfrx_local_dir}/ska-mid-spfrx-controller-ds/bin/ska-mid-spfrx-controller-ds root@${spfrx_ip}:${spfrx_bin}/.
+scp ${spfrx_local_dir}/ska-mid-spfrx-system-ds/bin/ska-mid-spfrx-system-ds root@${spfrx_ip}:${spfrx_bin}/.
+scp ${spfrx_local_dir}/ska-talondx-bsp/bin/ska-talondx-bsp-ds root@${spfrx_ip}:${spfrx_bin}/.
+scp ${spfrx_local_dir}/ska-talondx-temperature-monitor-ds/bin/ska-talondx-temperature-monitor-ds root@${spfrx_ip}:${spfrx_bin}/.
 
-scp ${spfrx_local_dir}/remote/spfrx-start.sh root@${spfrx_ip}:${spfrx_bin}/.
-scp ${spfrx_local_dir}/remote/spfrx-stop.sh root@${spfrx_ip}:${spfrx_bin}/.
+scp ${spfrx_local_dir}/../../scripts/remote/spfrx-start.sh root@${spfrx_ip}:${spfrx_bin}/.
+scp ${spfrx_local_dir}/../../scripts/remote/spfrx-stop.sh root@${spfrx_ip}:${spfrx_bin}/.
 
-scp ${spfrx_local_dir}/remote/program-bitstream.sh root@${spfrx_ip}:${spfrx_bin}/.
+scp ${spfrx_local_dir}/../../scripts/remote/program-bitstream.sh root@${spfrx_ip}:${spfrx_bin}/.
