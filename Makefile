@@ -95,7 +95,7 @@ run:  ## Run docker container
 # overwrite to use a different JSON
 SPFRX_CONFIG_FILE := spfrx-config.json
 SPFRX_CONFIG_FILE_PATH = $(IMG_DIR)/spfrx_config/$(SPFRX_CONFIG_FILE)
-SPFRX_LOCAL_DIR = $(PWD)/mnt/spfrx-config/
+SPFRX_LOCAL_DIR = $(PWD)/mnt/spfrx-config
 MNT_LOCAL_DIR = $(PWD)/mnt/
 
 # Call the scripts/config-spfrx-tango-host.sh script

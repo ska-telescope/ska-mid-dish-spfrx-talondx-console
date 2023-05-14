@@ -17,10 +17,10 @@
             }
         },
         {
-            "name" : "ska-mid-spfrx-system",
+            "name" : "ska-mid-spfrx-system-ds",
             "source" : "conan",
             "conan" : {
-                "package_name" : "ska-mid-spfrx-system",
+                "package_name" : "ska-mid-spfrx-system-ds",
                 "user" : "nrc",
                 "channel" : "stable",
                 "version" : "1.1.0",
