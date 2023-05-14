@@ -91,12 +91,11 @@ if __name__ == "__main__":
             f"VERSION: {VERSION}"
         )
 
-    if args.pll_get_status(
+    if args.pll_get_status:
         logger_.info(
             "Reading SPFRx PLL Status Registers"
             )
         pll_get_status()
-    )
 
     else:
         logger_.info("Hello from Mid DISH SPFRx SAT-PLL Console")
