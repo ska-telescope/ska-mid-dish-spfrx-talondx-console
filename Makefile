@@ -150,6 +150,9 @@ SPFRX_CONFIG_FILE_PATH = $(IMG_DIR)/spfrx_config/$(SPFRX_CONFIG_FILE)
 SPFRX_LOCAL_DIR = $(PWD)/mnt/spfrx-config
 MNT_LOCAL_DIR = $(PWD)/mnt/
 
+spfrx-login: ## login to the current SPFRX_IP as root
+	@. ssh root@$(SPFRX_ADDRESS)
+
 # Call the scripts/config-spfrx-tango-host.sh script
 #  This will set the TANGO_HOST environment variable on the specified remote host
 #  The format should be:
