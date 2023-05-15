@@ -21,7 +21,7 @@ SPFRX_MODE ?= cluster
 
 # KUBE_NAMESPACE defines the Kubernetes Namespace that will be deployed to
 # using Helm.  If this does not already exist it will be created
-KUBE_NAMESPACE ?= ska-mid-dish-spfrx
+KUBE_NAMESPACE ?= mid-psi-ska-dish-lmc
 
 # SPFRX_TANGO_DOMAIN defines the default domain name for the TANGO DB. This is used
 # in constructing the TANGO_HOST for k8s operating mode
@@ -129,16 +129,17 @@ PYTHON_LINT_TARGET = $(IMG_DIR)
 # Derive the SPFRX Database Pod from the specified KUBE_NAMESPACE
 SPFRX_DATABASE_POD = $(shell kubectl get svc -n $(KUBE_NAMESPACE) | grep databaseds | cut -d ' ' -f1)
 
+# Note that for now, the DISH LMC is deployed to SPFRX_TANGO_HOST=192.168.128.68:10000
 ifeq ($(SPFRX_MODE),cluster)
 # Derive the SPFRX_TANGO_HOST IP address and port number for CLUSTER mode 
 #  The format should be:
 #   TANGO_HOST=databaseds-tango-base.ci-ska-skampi-cbf-automated-pipeline-testing-mid.svc.cluster.local:10000
-	SPFRX_TANGO_HOST = $(SPFRX_DATABASE_POD).$(KUBE_NAMESPACE).svc.$(SPFRX_TANGO_DOMAIN):$(SPFRX_TANGO_PORT)
+	SPFRX_TANGO_HOST ?= $(SPFRX_DATABASE_POD).$(KUBE_NAMESPACE).svc.$(SPFRX_TANGO_DOMAIN):$(SPFRX_TANGO_PORT)
 else
 # Derive the SPFRX_TANGO_HOST IP address and port number for STANDALONE mode
 #  The format should be:
 #   TANGO_HOST=spfrx_standalone_db_ip:spfrx_tango_port
-	SPFRX_TANGO_HOST = $(SPFRX_STANDALONE_DB_IP):$(SPFRX_TANGO_PORT)
+	SPFRX_TANGO_HOST ?= $(SPFRX_STANDALONE_DB_IP):$(SPFRX_TANGO_PORT)
 endif
 
 run:  ## Run docker container
@@ -153,51 +154,51 @@ MNT_LOCAL_DIR = $(PWD)/mnt/
 spfrx-login: ## login to the current SPFRX_IP as root
 	ssh root@$(SPFRX_ADDRESS)
 
-# Call the scripts/config-spfrx-tango-host.sh script
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/config-spfrx-tango-host.sh script
 #  This will set the TANGO_HOST environment variable on the specified remote host
 #  The format should be:
 #   TANGO_HOST=databaseds-tango-base.ci-ska-skampi-cbf-automated-pipeline-testing-mid.svc.cluster.local:10000
 #  or similar, depending on the k8s configuration
 config-spfrx-tango-host: ## Set TANGO_HOST on SPFRx HPS
-	@. scripts/config-spfrx-tango-host.sh $(SPFRX_ADDRESS) $(SPFRX_TANGO_HOST)
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/config-spfrx-tango-host.sh $(SPFRX_ADDRESS) $(SPFRX_TANGO_HOST)
 
-# Call the scripts/spfrx-deploy-artifacts.sh script
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-deploy-artifacts.sh script
 #  This will copy required shell scripts to the specified remote SPFRx HPS host
 spfrx-deploy-artifacts: ## Deploy SPFRx artefacts to HPS
-	@. scripts/spfrx-deploy-artifacts.sh $(SPFRX_ADDRESS) $(SPFRX_LOCAL_DIR) $(SPFRX_BIN)
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-deploy-artifacts.sh $(SPFRX_ADDRESS) $(SPFRX_LOCAL_DIR) $(SPFRX_BIN)
 
-# Call the scripts/spfrx-rxpu-ops.sh script to bring UP the RXPU
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-rxpu-ops.sh script to bring UP the RXPU
 #  This will perform an ssh command to start the RXPU TANGO device servers.
 spfrx-start: config-spfrx-tango-host ## Start SPFRx TANGO device servers
-	@. scripts/spfrx-rxpu-ops.sh up $(SPFRX_ADDRESS) $(SPFRX_BIN) $(SPFRX_TANGO_INSTANCE) $(SPFRX_DEFAULT_LOGGING_LEVEL)
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-rxpu-ops.sh up $(SPFRX_ADDRESS) $(SPFRX_BIN) $(SPFRX_TANGO_INSTANCE) $(SPFRX_DEFAULT_LOGGING_LEVEL)
 
-# Call the scripts/spfrx-rxpu-ops.sh script to take DOWN the RXPU
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-rxpu-ops.sh script to take DOWN the RXPU
 #  This will perform an ssh command to stop the RXPU TANGO device servers.
 spfrx-stop: config-spfrx-tango-host ## Stop SPFRx TANGO device servers
-	@. scripts/spfrx-rxpu-ops.sh down $(SPFRX_ADDRESS) $(SPFRX_BIN) $(SPFRX_TANGO_INSTANCE) $(SPFRX_DEFAULT_LOGGING_LEVEL)
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-rxpu-ops.sh down $(SPFRX_ADDRESS) $(SPFRX_BIN) $(SPFRX_TANGO_INSTANCE) $(SPFRX_DEFAULT_LOGGING_LEVEL)
 
-# Call the scripts/spfrx-host-qsfp-hipower.sh script
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-host-qsfp-hipower.sh script
 #  This will call the bittware function on the local host to engage hi-power mode
 spfrx-qsfp-hi-power: ## Set local Bittware to hi-power mode
-	@. scripts/spfrx-host-qsfp-hipower.sh ${QSFP_CONTROL_PATH}
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-host-qsfp-hipower.sh ${QSFP_CONTROL_PATH}
 
-# Call the scripts/spfrx-get-fanspeed.sh script
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-get-fanspeed.sh script
 #  This will return PWM fan settings for fans 1, 2 and 3
 #  use SPFRX_BSP_HWMON=# to provide the hwmon index if required (default SPFRX_BSP_HWMON is 1)
 spfrx-get-fanspeed: ## Retrieve fan speed settings for RXPU
-	@. scripts/spfrx-get-fanspeed.sh ${SPFRX_ADDRESS} ${SPFRX_BSP_HWMON}
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-get-fanspeed.sh ${SPFRX_ADDRESS} ${SPFRX_BSP_HWMON}
 
-# Call the scripts/spfrx-set-fanspeed.sh script
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-set-fanspeed.sh script
 #  This will return PWM fan settings for fans 1, 2 and 3
 #  use SPFRX_FAN_SPEED=### to indicate the speed 
 #  use SPFRX_BSP_HWMON=# to provide the hwmon index if required (default SPFRX_BSP_HWMON is 1)
 spfrx-set-fanspeed: ## Set fan speed settings for RXPU
-	@. scripts/spfrx-set-fanspeed.sh ${SPFRX_ADDRESS} ${SPFRX_FAN_SPEED} ${SPFRX_BSP_HWMON}
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-set-fanspeed.sh ${SPFRX_ADDRESS} ${SPFRX_FAN_SPEED} ${SPFRX_BSP_HWMON}
 
-# Call the scripts/program-bitstream-remote script
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/program-bitstream-remote script
 #  This will program the bitstream remotely on the SPFRx TALON-DX HPS
 spfrx-program-bitstream: ## Remotely configure the SPFRx FPGA
-	@. scripts/program-bitstream-remote.sh ${TAR_ARCHIVE} ${SPFRX_ADDRESS}
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/program-bitstream-remote.sh ${TAR_ARCHIVE} ${SPFRX_ADDRESS}
 
 ARTIFACTS_POD = $(shell kubectl -n $(KUBE_NAMESPACE) get pod --no-headers --selector=vol=artifacts-admin -o custom-columns=':metadata.name')
 

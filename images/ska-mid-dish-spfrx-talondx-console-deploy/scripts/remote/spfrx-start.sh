@@ -1,8 +1,9 @@
 #!/bin/sh
 
 display_usage() {
-    echo -e "\nstart-rxpu\n"
-    echo "Start the RXPU device servers.\n"
+    echo -e "\nspfrx-start\n"
+    echo -e "---------------"
+    echo "Start the SPFRX RXPU TANGO device servers.\n"
     echo -e "\nUsage: $0 [bin location] [server instance] [logging level]\n"
 }
 
