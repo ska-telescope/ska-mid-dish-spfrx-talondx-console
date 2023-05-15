@@ -33,10 +33,10 @@
             }
         },
         {
-            "name" : "ska-talondx-bsp",
+            "name" : "ska-talondx-bsp-ds",
             "source" : "conan",
             "conan" : {
-                "package_name" : "ska-talondx-bsp",
+                "package_name" : "ska-talondx-bsp-ds",
                 "user" : "nrc",
                 "channel" : "stable",
                 "version" : "1.1.0",
