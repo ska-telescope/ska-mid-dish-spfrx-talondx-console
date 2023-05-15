@@ -39,7 +39,7 @@
                 "package_name" : "ska-talondx-bsp",
                 "user" : "nrc",
                 "channel" : "stable",
-                "version" : "1.0.0",
+                "version" : "1.1.0",
                 "profile" : "conan_aarch64_profile.txt"
             },
             "git" : {
@@ -161,7 +161,7 @@
                             "LoggingLevelDefault" : 4,
                             "LoggingTargetsDefault" : [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ],
                             "SkaLevel" : "",
                             "GroupDefinitions" : ""
@@ -185,7 +185,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -222,7 +222,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -248,7 +248,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -274,7 +274,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"]
+                                "device::ska001/lmc/dish_logger"]
                        }
                     },
                     {
@@ -294,7 +294,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -315,7 +315,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -329,7 +329,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -349,7 +349,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -364,7 +364,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -398,7 +398,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -432,7 +432,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     }
@@ -454,7 +454,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     }
@@ -483,7 +483,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -504,7 +504,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -519,7 +519,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -534,7 +534,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -549,7 +549,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -564,7 +564,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -585,7 +585,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -606,7 +606,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -627,7 +627,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -648,7 +648,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     },
@@ -669,7 +669,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska001/lmc/dish_logger"
                             ]
                         }
                     }

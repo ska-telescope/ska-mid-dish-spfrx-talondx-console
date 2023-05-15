@@ -8,7 +8,7 @@ display_usage() {
     echo -e "\n"
     echo -e "SPFRX_IP : The SPFRx TALON-DX HPS IP Address"
     echo -e "FAN_SPEED : Integer between 150-255 to set PWM value"
-    echo -e "HWMON_ID : (Optional) The numerical digit of HWMON ID for fan control device"
+    echo -e "SPFRX_BSP_HWMON : (Optional) The numerical digit of HWMON ID for fan control device"
     echo -e "           (Defaults to 1)"
 }
 
