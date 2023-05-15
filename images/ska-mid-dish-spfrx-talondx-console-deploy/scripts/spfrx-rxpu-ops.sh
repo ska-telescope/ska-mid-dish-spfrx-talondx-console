@@ -36,12 +36,12 @@ then
         exit 1
     fi
     echo "BRINGUP RXPU ON ${spfrx_ip}"
-    ssh root@${spfrx_ip} "${spfrx_bin}/start-rxpu ${tango_instance} ${log_level_default}"
+    ssh root@${spfrx_ip} "${spfrx_bin}/spfrx-start ${tango_instance} ${log_level_default}"
 fi
 
 if [ ${command} = "down" ]
 then
     echo "BRINGDOWN RXPU ON ${spfrx_ip}"
-    ssh root@${spfrx_ip} "${spfrx_bin}/stop-rxpu"
+    ssh root@${spfrx_ip} "${spfrx_bin}/spfrx-stop"
 fi
 
