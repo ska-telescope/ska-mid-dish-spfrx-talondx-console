@@ -264,14 +264,14 @@ talon-version: config-spfrx-tango-host ## Display SPFRx TANGO device server vers
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
-	$(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-version
+	$(strip $(OCI_IMAGE)):$(release) ./spfrx.py --version_tango_all
 
 talon-status: config-spfrx-tango-host ## Display SPFRx TANGO device server status information
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
 	--env TERM=xterm \
-	$(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-status
+	$(strip $(OCI_IMAGE)):$(release) ./spfrxv.py --status_tango_all
 
 spfrx: config-spfrx-tango-host ## SPFRx HPS Console application
 	@echo $(Arguments) & \

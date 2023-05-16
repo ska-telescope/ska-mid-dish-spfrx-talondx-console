@@ -83,7 +83,9 @@ def get_device_status(
 
     for dev_name in SPFRX_DEVICE_LIST:
         try:
-            dev_proxy = DeviceProxy(getFqdn(dev_name, device, name))
+            dev_proxy = DeviceProxy(
+                getFqdn(SPFRX_DEVICE_LIST[dev_name], device, name)
+            )
         except Exception as proxy_except:
             logger_.info(
                 f"Error on DeviceProxy {dev_name}: {proxy_except}"
@@ -159,8 +161,9 @@ def get_device_version_info(
 
     for dev_name in SPFRX_DEVICE_LIST:
         try:
-            dev_proxy = DeviceProxy(getFqdn(dev_name, device, name))
-
+            dev_proxy = DeviceProxy(
+                getFqdn(SPFRX_DEVICE_LIST[dev_name], device, name)
+            )
             if dev_proxy.import_info().exported:
                 logger_.info(f"{dev_proxy.info().dev_class:<20}{dev_name}")
                 attr_names = [
