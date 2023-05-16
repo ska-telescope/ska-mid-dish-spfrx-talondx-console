@@ -6,21 +6,19 @@ display_usage() {
     echo "Set the fan speeds of SPFRx RXPU fans 1, 2, and 3.\n"
     echo -e "\nUsage: $0 HWMON_ID FAN_SPEED"
     echo -e "\n"
-    echo -e "SPFRX_IP : The SPFRx TALON-DX HPS IP Address"
     echo -e "FAN_SPEED : Integer between 150-255 to set PWM value"
     echo -e "SPFRX_BSP_HWMON : (Optional) The numerical digit of HWMON ID for fan control device"
     echo -e "           (Defaults to 1)"
 }
 
-if [ $# -lt 2]
+if [ $# -lt 1]
 then
     display_usage
     exit 1
 fi
 
-SPFRX_IP=${1}
-SPEED=${2}
-HWMON=${3:1}
+SPEED=${1}
+HWMON=${2:1}
 
 HWMON_DIR=/sys/devices/platform/soc/ffc02800.i2c/i2c-0/0-0020/hwmon/hwmon${HWMON}
 
