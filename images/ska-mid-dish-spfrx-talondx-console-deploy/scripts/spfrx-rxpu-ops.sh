@@ -30,12 +30,13 @@ fi
 
 if [ ${command} = "up" ]
 then
-    if [$# -lt 5]
+    if [ $# -lt 5 ]
     then 
         display_usage
         exit 1
     fi
-    echo "BRINGUP RXPU ON ${spfrx_ip}"
+    echo "BRINGUP SPFRx RXPU instance ${tango_instance} ON ${spfrx_ip}"
+    echo "LOGGING LEVEL ${log_level_default}"
     ssh root@${spfrx_ip} "${spfrx_bin}/spfrx-start /usr/local/bin ${tango_instance} ${log_level_default}"
 fi
 

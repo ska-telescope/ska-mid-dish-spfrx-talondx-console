@@ -35,7 +35,7 @@ SPFRX_STANDALONE_DB_IP ?= 10.165.3.22
 
 # SPFRX_TANGO_INSTANCE is the default instance name for the SPFRx operational registered
 # device servers within the TANGO DB
-SPFRX_TANGO_INSTANCE ?= spfrx
+SPFRX_TANGO_INSTANCE ?= spfrx-20
 
 # SPFRX_DEFAULT_LOGGING_LEVEL is the default logging level that all devices servers are
 # initiated with
