@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/bash
 
 display_usage() {
     echo -e "\nSPFRx set fanspeed"

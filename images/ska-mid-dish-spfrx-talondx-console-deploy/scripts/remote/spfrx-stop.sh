@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/bash
 
 # sh script for Talon-DX HPS that stops all SPFRx related device server processes
 
