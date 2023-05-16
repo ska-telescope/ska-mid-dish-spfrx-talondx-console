@@ -169,13 +169,13 @@ spfrx-deploy-artifacts: ## Deploy SPFRx artefacts to HPS
 
 # Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-rxpu-ops.sh script to bring UP the RXPU
 #  This will perform an ssh command to start the RXPU TANGO device servers.
-spfrx-start: config-spfrx-tango-host ## Start SPFRx TANGO device servers
-	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-rxpu-ops.sh up $(SPFRX_ADDRESS) $(SPFRX_BIN) $(SPFRX_TANGO_INSTANCE) $(SPFRX_DEFAULT_LOGGING_LEVEL)
+spfrx-start: ## Start SPFRx TANGO device servers
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-remote-start.sh ${SPFRX_TANGO_HOST} $(SPFRX_ADDRESS) $(SPFRX_BIN) $(SPFRX_TANGO_INSTANCE) $(SPFRX_DEFAULT_LOGGING_LEVEL) &
 
 # Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-rxpu-ops.sh script to take DOWN the RXPU
 #  This will perform an ssh command to stop the RXPU TANGO device servers.
-spfrx-stop: config-spfrx-tango-host ## Stop SPFRx TANGO device servers
-	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-rxpu-ops.sh down $(SPFRX_ADDRESS) $(SPFRX_BIN) $(SPFRX_TANGO_INSTANCE) $(SPFRX_DEFAULT_LOGGING_LEVEL)
+spfrx-stop: ## Stop SPFRx TANGO device servers
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-remote-stop.sh $(SPFRX_ADDRESS) $(SPFRX_BIN)
 
 # Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-host-qsfp-hipower.sh script
 #  This will call the bittware function on the local host to engage hi-power mode

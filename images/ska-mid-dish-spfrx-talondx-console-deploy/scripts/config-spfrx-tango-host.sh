@@ -26,4 +26,5 @@ then
     exit 1
 fi
 
+echo "Setting TANGO_HOST=${spfrx_tango_host} on ${spfrx_ip}"
 ssh root@${spfrx_ip} "export TANGO_HOST=${spfrx_tango_host}"
