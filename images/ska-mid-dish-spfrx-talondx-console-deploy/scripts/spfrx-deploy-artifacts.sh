@@ -37,3 +37,5 @@ scp images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/remote/spfrx-start.
 scp images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/remote/spfrx-stop.sh root@${spfrx_ip}:${spfrx_bin}/spfrx-stop
 
 scp images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/remote/program-bitstream.sh root@${spfrx_ip}:${spfrx_bin}/program-bitstream
+
+scp images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/remote/spfrx-set-fanspeed.sh root@${spfrx_ip}:${spfrx_bin}/spfrx-set-fanspeed
