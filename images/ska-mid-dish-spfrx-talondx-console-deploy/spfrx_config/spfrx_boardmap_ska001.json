@@ -86,7 +86,7 @@
         "db_servers" : [
             {
                 "server" : "ska-mid-spfrx-controller-ds",
-                "instance" : "spfrx", 
+                "instance" : "spfrx-20", 
                 "name" : "spfrxpu",
                 "device" : "ska001",
                 "deviceList" : [
@@ -171,7 +171,7 @@
             },
             {
                 "server" : "ska-mid-spfrx-system-ds",
-                "instance" : "spfrx", 
+                "instance" : "spfrx-20", 
                 "name" : "spfrxpu",
                 "device" : "ska001",
                 "deviceList" : [
@@ -440,7 +440,7 @@
             },
             {
                 "server" : "ska-talondx-temperature-monitor-ds",
-                "instance" : "spfrx", 
+                "instance" : "spfrx-20", 
                 "name" : "spfrxpu",
                 "device" : "ska001",
                 "deviceList" : [
@@ -462,7 +462,7 @@
             },
             {
                 "server" : "ska-talondx-bsp-ds",
-                "instance" : "spfrx", 
+                "instance" : "spfrx-20", 
                 "name" : "spfrxpu",
                 "device" : "ska001",
                 "deviceList" : [
