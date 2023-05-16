@@ -594,7 +594,7 @@
                         "alias" : "ltm-1",
                         "devprop" : {
                             "ltm_id": 0,
-                            "device_directory": "/sys/bus/i2c/devices/",
+                            "device_directory": "/home/root/temp/",
                             "bus_id": 1,
                             "i2c_address": 64,
                             "hw_filter": "hwmon",
@@ -615,7 +615,7 @@
                         "alias" : "ltm-2",
                         "devprop" : {
                             "ltm_id": 0,
-                            "device_directory": "/sys/bus/i2c/devices/",
+                            "device_directory": "/home/root/temp/",
                             "bus_id": 1,
                             "i2c_address": 65,
                             "hw_filter": "hwmon",
@@ -636,7 +636,7 @@
                         "alias" : "ltm-11",
                         "devprop" : {
                             "ltm_id": 0,
-                            "device_directory": "/sys/bus/i2c/devices/",
+                            "device_directory": "/home/root/temp/",
                             "bus_id": 1,
                             "i2c_address": 74,
                             "hw_filter": "hwmon",
@@ -657,7 +657,7 @@
                         "alias" : "ltm-12",
                         "devprop" : {
                             "ltm_id": 0,
-                            "device_directory": "/sys/bus/i2c/devices/",
+                            "device_directory": "/home/root/temp/",
                             "bus_id": 1,
                             "i2c_address": 75,
                             "hw_filter": "hwmon",
