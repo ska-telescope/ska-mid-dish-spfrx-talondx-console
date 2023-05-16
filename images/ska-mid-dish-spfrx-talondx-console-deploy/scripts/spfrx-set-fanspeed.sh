@@ -12,7 +12,7 @@ display_usage() {
     echo -e "           (Defaults to 1)"
 }
 
-if [ $# -lt 2]
+if [ $# -lt 2 ]
 then
     display_usage
     exit 1
