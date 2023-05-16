@@ -9,7 +9,7 @@ display_usage() {
     echo -e "FAN_SPEED : Integer between 150-255 to set PWM value"
 }
 
-if [ $# -lt 1]
+if [ $# -lt 1 ]
 then
     display_usage
     exit 1
