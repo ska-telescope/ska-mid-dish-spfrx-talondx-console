@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/sh
 
 display_usage() {
     echo -e "\nprogram Talon-DX Bitstream script"

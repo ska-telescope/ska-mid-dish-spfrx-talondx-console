@@ -1,14 +1,12 @@
-#!/usr/bin/bash
+#!/bin/sh
 
 display_usage() {
     echo -e "\nSPFRx set fanspeed"
     echo -3 "--------------------\n"
     echo "Set the fan speeds of SPFRx RXPU fans 1, 2, and 3.\n"
-    echo -e "\nUsage: $0 HWMON_ID FAN_SPEED"
+    echo -e "\nUsage: $0 FAN_SPEED"
     echo -e "\n"
     echo -e "FAN_SPEED : Integer between 150-255 to set PWM value"
-    echo -e "SPFRX_BSP_HWMON : (Optional) The numerical digit of HWMON ID for fan control device"
-    echo -e "           (Defaults to 1)"
 }
 
 if [ $# -lt 1]
@@ -18,7 +16,7 @@ then
 fi
 
 SPEED=${1}
-HWMON=${2:1}
+HWMON=1
 
 HWMON_DIR=/sys/devices/platform/soc/ffc02800.i2c/i2c-0/0-0020/hwmon/hwmon${HWMON}
 
