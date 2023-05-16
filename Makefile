@@ -146,7 +146,7 @@ run:  ## Run docker container
 	docker run --rm $(strip $(OCI_IMAGE)):$(release)
 
 # overwrite to use a different JSON
-SPFRX_CONFIG_FILE := spfrx-config.json
+SPFRX_CONFIG_FILE := spfrx-config-spfrx001.json
 SPFRX_CONFIG_FILE_PATH = $(IMG_DIR)/spfrx_config/$(SPFRX_CONFIG_FILE)
 SPFRX_LOCAL_DIR = $(PWD)/mnt/spfrx-config
 MNT_LOCAL_DIR = $(PWD)/mnt/
@@ -246,19 +246,19 @@ config-db: config-spfrx-tango-host ## Configure the database
 	--network host \
 	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --config-db
+	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --config-db $(ARGS)
 
 generate-spfrx-config: ## Generate spfrx-config.json file
 	@docker run --rm \
 	--network host \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --generate-spfrx-config
+	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --generate-spfrx-config $(ARGS)
 
 download-artifacts:  ## Download artifacts from CAR 
 	mkdir -p $(SPFRX_LOCAL_DIR)
 	@docker run --rm \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --download-artifacts
+	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --download-artifacts $(ARGS)
 
 talon-version: config-spfrx-tango-host ## Display SPFRx TANGO device server version information
 	@docker run --rm \
@@ -271,7 +271,7 @@ talon-status: config-spfrx-tango-host ## Display SPFRx TANGO device server statu
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
 	--env TERM=xterm \
-	$(strip $(OCI_IMAGE)):$(release) ./spfrxv.py --status_tango_all
+	$(strip $(OCI_IMAGE)):$(release) ./spfrx.py --status_tango_all
 
 spfrx: config-spfrx-tango-host ## SPFRx HPS Console application
 	@echo $(Arguments) & \
