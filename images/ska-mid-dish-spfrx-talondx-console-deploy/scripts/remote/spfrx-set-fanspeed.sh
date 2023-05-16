@@ -13,6 +13,10 @@ display_usage() {
 }
 
 if [ $# -lt 2]
+then
+    display_usage
+    exit 1
+fi
 
 SPFRX_IP=${1}
 SPEED=${2}
