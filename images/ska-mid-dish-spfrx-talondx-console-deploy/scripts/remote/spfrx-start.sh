@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/sh
 
 display_usage() {
     echo -e "\nspfrx-start\n"
