@@ -1,34 +1,33 @@
 #!/bin/sh
 
 display_usage() {
-    echo -e "\nspfrx-start\n"
-    echo -e "---------------"
+    echo -e "\nspfrx-start"
+    echo -e "-----------"
     echo "Start the SPFRX RXPU TANGO device servers.\n"
-    echo -e "\nUsage: $0 [bin location] [server instance] [logging level]\n"
+    echo -e "\nUsage: $0 [server instance] [logging level]\n"
 }
 
-bindir=${1}
-instance=${2}
-log_level=${3}
+instance=${1}
+log_level=${2}
 
-if [ $# -lt 3 ]
+if [ $# -lt 2 ]
 then
     display_usage
     exit 1
 fi
 
 echo "Starting Talon-DX BSP..."
-${bindir}/ska-talondx-bsp-ds ${instance} -v${log_level} &
+ska-talondx-bsp-ds ${instance} -v${log_level} &
 sleep 1
 
 echo "Starting Talon-DX FPGA Temperature Monitor..."
-${bindir}/ska-talondx-temperature-monitor-ds ${instance} -v${log_level} &
+ska-talondx-temperature-monitor-ds ${instance} -v${log_level} &
 sleep 1
 
 echo "Starting SPFRx Multi-Class Low Level Device Server..."
-${bindir}/ska-mid-spfrx-system-ds ${instance} -v${log_level} &
+ska-mid-spfrx-system-ds ${instance} -v${log_level} &
 sleep 1
 
 echo "Starting SPFRx Controller DS..."
-${bindir}/ska-mid-spfrx-controller-ds ${instance} -v${log_level} &
+ska-mid-spfrx-controller-ds ${instance} -v${log_level} &
 

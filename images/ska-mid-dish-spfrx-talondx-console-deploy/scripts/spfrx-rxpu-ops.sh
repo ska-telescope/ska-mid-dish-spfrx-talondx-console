@@ -2,7 +2,7 @@
 
 display_usage() {
     echo -e "\nsfprx-rxpu-ops script"
-    echo -e "-----------------------\n"
+    echo -e "---------------------\n"
     echo -e "Start or stop the RXPU software remotely."
     echo -e "\nUsage: to START:"
     echo -e "   $0 up SPFRX_IP SPFRX_BIN SPFRX_TANGO_INSTANCE SPFRX_LOGGING_LEVEL"
@@ -37,7 +37,7 @@ then
     fi
     echo "BRINGUP SPFRx RXPU instance ${tango_instance} ON ${spfrx_ip}"
     echo "LOGGING LEVEL ${log_level_default}"
-    ssh root@${spfrx_ip} "${spfrx_bin}/spfrx-start /usr/local/bin ${tango_instance} ${log_level_default}"
+    ssh root@${spfrx_ip} "${spfrx_bin}/spfrx-start ${tango_instance} ${log_level_default}"
 fi
 
 if [ ${command} = "down" ]
