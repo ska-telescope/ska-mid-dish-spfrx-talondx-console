@@ -155,7 +155,7 @@
                             "B5aNoiseDiodeTransitionHoldoffDefault" : 0,      
                             "B5bNoiseDiodeTransitionHoldoffDefault" : 0,  
                             "DishType" : 0,
-                            "DishID" : "psi",
+                            "DishID" : "SKA001",
                             "NominalKValue": 1,
                             "NominalSpectrometerInterval" : 1,
                             "LoggingLevelDefault" : 4,
