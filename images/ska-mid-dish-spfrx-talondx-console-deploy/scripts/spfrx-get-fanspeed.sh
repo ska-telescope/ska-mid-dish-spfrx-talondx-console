@@ -19,7 +19,8 @@ fi
 
 SPFRX_IP=${1}
 SPFRX_BSP_HWMON=${2:1}
-HWMON_DIR=/sys/devices/platform/soc/ffc02800.i2c/i2c-0/0-0020/hwmon/hwmon${SPFRX_BSP_HWMON}
+#HWMON_DIR=/sys/devices/platform/soc/ffc02800.i2c/ri2c-0/0-0020/hwmon/hwmon${SPFRX_BSP_HWMON}
+HWMON_DIR=/sys/bus/i2c/devices/0-0020/hwmon/hwmon${SPFRX_BSP_HWMON}
 
 ssh -T root@${SPFRX_IP} <<EOF
 	cat ${HWMON_DIR}/pwm1

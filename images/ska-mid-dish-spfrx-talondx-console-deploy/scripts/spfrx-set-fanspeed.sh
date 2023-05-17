@@ -22,7 +22,8 @@ SPFRX_IP=${1}
 SPEED=${2}
 HWMON=${3:1}
 
-HWMON_DIR=/sys/devices/platform/soc/ffc02800.i2c/i2c-0/0-0020/hwmon/hwmon${HWMON}
+HWMON_DIR=/sys/bus/i2c/devices/0-0020/hwmon/hwmon${SPFRX_BSP_HWMON}
+#HWMON_DIR=/sys/devices/platform/soc/ffc02800.i2c/i2c-0/0-0020/hwmon/hwmon${HWMON}
 
 if [ ${SPEED} -lt 150 ] || [ -z ${SPEED} ]
 then
