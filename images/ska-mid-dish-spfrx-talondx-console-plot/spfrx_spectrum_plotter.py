@@ -137,10 +137,20 @@ class SpectrumPlotter:
         spfrx_pktcap = PyTangoClientWrapper()
         spfrx_pktcap.create_tango_client(self.getFqdn(self._pktcap))
         spfrx_pktcap.set_timeout_millis(5000)
+        spfrx_ctrl = PyTangoClientWrapper()
+        spfrx_ctrl.create_tango_client(self.getFqdn(self._ctrl))
+        spfrx_ctrl.set_timeout_millis(5000)
 
         logger_.info("Configuring Spectrometer pktcap to use LW bridge...")
         try:
             spfrx_pktcap.command_read_write("spectrometer_set_bridge", 1)
+        except tango.DevFailed:
+            tango.Except.throw_exception(
+                "UNABLE TO SET LW BRIDGE MODE")
+            exit(1)
+        logger_.info("Enabling Spectrometer in Controller ds...")
+        try:
+            spfrx_ctrl.command_read_write("SpectrometerCtrl", 1)
         except tango.DevFailed:
             tango.Except.throw_exception(
                 "UNABLE TO SET LW BRIDGE MODE")
@@ -163,7 +173,7 @@ class SpectrumPlotter:
 
         fig = self.createPlot()
 
-        anim.FuncAnimation(fig, self.update, frames=1, repeat=True)
+        a = anim.FuncAnimation(fig, self.update, frames=1, repeat=True)
         plt.show()
 
     def createPlot(
