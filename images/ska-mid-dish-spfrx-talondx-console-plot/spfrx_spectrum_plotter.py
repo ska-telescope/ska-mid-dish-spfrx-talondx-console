@@ -44,10 +44,8 @@ class SpectrumPlotter:
     _data_xy_re = []
     _data_xy_im = []
 
-    _device = SPFRX_DEVICE
-    _name = SPFRX_NAME
-    _ctrl = SPFRX_CTRL_ALIAS
-    _pktcap = SPFRX_PKTCAP_ALIAS
+    _ctrl_proxy = None
+    _pktcap_proxy = None
 
     _throttle_interval: int
     _n_packets: int
@@ -107,6 +105,23 @@ class SpectrumPlotter:
             f"  Test mode: {'ENGAGED' if self._test_mode else 'NOT ACTIVE'}"
             )
 
+        logger_.info(
+            "Establishing TANGO proxies to CTRL, PKTCAP device servers"
+        )
+        try:
+            self._pktcap_proxy = PyTangoClientWrapper()
+            self._pktcap_proxy.create_tango_client(self.getFqdn(self._pktcap))
+            self._pktcap_proxy.set_timeout_millis(5000)
+
+            self._ctrl_proxy = PyTangoClientWrapper()
+            self._ctrl_proxy.create_tango_client(self.getFqdn(self._ctrl))
+            self._ctrl_proxy.set_timeout_millis(5000)
+        except tango.DevFailed:
+            tango.Except.throw_exception(
+                "UNABLE TO ESTABLISH DEVICE PROXIES")
+            exit(1)
+
+
         self.plotInit()
 
     def getFqdn(
@@ -134,23 +149,17 @@ class SpectrumPlotter:
         """
 
         logger_.info("Initializing the Gated Spectrometer Plotter")
-        spfrx_pktcap = PyTangoClientWrapper()
-        spfrx_pktcap.create_tango_client(self.getFqdn(self._pktcap))
-        spfrx_pktcap.set_timeout_millis(5000)
-        spfrx_ctrl = PyTangoClientWrapper()
-        spfrx_ctrl.create_tango_client(self.getFqdn(self._ctrl))
-        spfrx_ctrl.set_timeout_millis(5000)
 
         logger_.info("Configuring Spectrometer pktcap to use LW bridge...")
         try:
-            spfrx_pktcap.command_read_write("spectrometer_set_bridge", 1)
+            self._pktcap_proxy.command_read_write("spectrometer_set_bridge", 1)
         except tango.DevFailed:
             tango.Except.throw_exception(
                 "UNABLE TO SET LW BRIDGE MODE")
             exit(1)
         logger_.info("Enabling Spectrometer in Controller ds...")
         try:
-            spfrx_ctrl.command_read_write("SpectrometerCtrl", 1)
+            self._ctrl_proxy.command_read_write("SpectrometerCtrl", 1)
         except tango.DevFailed:
             tango.Except.throw_exception(
                 "UNABLE TO SET LW BRIDGE MODE")
@@ -158,11 +167,11 @@ class SpectrumPlotter:
 
         try:
             if not self._test_mode:
-                spfrx_pktcap.write_attribute(
+                self._pktcap_proxy.write_attribute(
                     "spectrometer_throttle_interval",
                     self._throttle_interval
                 )
-                spfrx_pktcap.write_attribute(
+                self._pktcap_proxy.write_attribute(
                     "spectrometer_num_packets",
                     self._n_packets
                 )
@@ -201,15 +210,6 @@ class SpectrumPlotter:
         """
         Update the data within the plot.
         """
-
-        spfrx_ctrl = PyTangoClientWrapper()
-        spfrx_ctrl.create_tango_client(self.getFqdn(self._ctrl))
-        spfrx_ctrl.set_timeout_millis(5000)
-
-        spfrx_pktcap = PyTangoClientWrapper()
-        spfrx_pktcap.create_tango_client(self.getFqdn(self._pktcap))
-        spfrx_pktcap.set_timeout_millis(5000)
-
         attH = ""
         attV = ""
 
@@ -217,17 +217,17 @@ class SpectrumPlotter:
             if self._test_mode:
                 self._raw = range(8202)
             else:
-                spfrx_pktcap.command_read_write(
+                self._pktcap_proxy.command_read_write(
                     "spectrometer_retrieve_result",
                     None
                 )
-                self._raw = spfrx_pktcap.read_attribute(
+                self._raw = self._pktcap_proxy.read_attribute(
                     "spectrometer_spectrum_result"
                 )
-                attH = spfrx_ctrl.read_attribute(
+                attH = self._ctrl_proxy.read_attribute(
                     "attenuationPolH"
                 )
-                attV = spfrx_ctrl.read_attribute(
+                attV = self._ctrl_proxy.read_attribute(
                     "attenuationPolV"
                 )
                 if attH is None:
@@ -242,7 +242,7 @@ class SpectrumPlotter:
         self.updatePlot(timestamp, attH, attV)
 
         if timestamp % 10 == 0:
-            spfrx_ctrl.command_read_write("MonitorPing")
+            self._ctrl_proxy.command_read_write("MonitorPing")
         plt.pause(self._update_interval / 1000)
 
     def parseData(
@@ -285,15 +285,11 @@ class SpectrumPlotter:
         Update the plot figure object.
         """
 
-        spfrx_ctrl = PyTangoClientWrapper()
-        spfrx_ctrl.create_tango_client(self.getFqdn(self._ctrl))
-        spfrx_ctrl.set_timeout_millis(5000)
-
         mag = self._mag
 
         try:
-            kvalue = spfrx_ctrl.read_attribute("kValue")
-            band = spfrx_ctrl.read_attribute("configuredBand")
+            kvalue = self._ctrl_proxy.read_attribute("kValue")
+            band = self._ctrl_proxy.read_attribute("configuredBand")
         except tango.DevFailed:
             tango.Except.throw_exception(
                 "UNABLE TO READ FROM CONTROLLER")
