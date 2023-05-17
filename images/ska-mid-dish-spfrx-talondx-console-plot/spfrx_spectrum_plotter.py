@@ -205,7 +205,7 @@ class SpectrumPlotter:
         return fig
 
     def update(
-            self
+            self, test
             ) -> None:
         """
         Update the data within the plot.
@@ -218,8 +218,7 @@ class SpectrumPlotter:
                 self._raw = range(8202)
             else:
                 self._pktcap_proxy.command_read_write(
-                    "spectrometer_retrieve_result",
-                    None
+                    "spectrometer_retrieve_result"
                 )
                 self._raw = self._pktcap_proxy.read_attribute(
                     "spectrometer_spectrum_result"
@@ -239,6 +238,7 @@ class SpectrumPlotter:
                 "UNABLE TO READ FROM PKTCAP")
 
         timestamp = self.parseData()
+
         self.updatePlot(timestamp, attH, attV)
 
         if timestamp % 10 == 0:
@@ -253,27 +253,29 @@ class SpectrumPlotter:
 
         :returns: An integer timestamp
         """
-        timestamp = self._raw[0]  # | (raw_data[1] << 16)
+        if self._raw is not None:
+            timestamp = self._raw[0]  # | (raw_data[1] << 16)
 
-        self._data_xx = np.array([self._raw[2:1027], self._raw[4102:5127]])
-        self._data_xx = np.where(self._data_xx != 0, self._data_xx, 1)
-        self._data_xx = 10 * np.log10(self._data_xx)
+            self._data_xx = np.array([self._raw[2:1027], self._raw[4102:5127]])
+            self._data_xx = np.where(self._data_xx != 0, self._data_xx, 1)
+            self._data_xx = 10 * np.log10(self._data_xx)
 
-        self._data_yy = np.array([self._raw[1027:2052], self._raw[5127:6152]])
-        self._data_yy = np.where(self._data_yy != 0, self._data_yy, 1)
-        self._data_yy = 10 * np.log10(self._data_yy)
+            self._data_yy = np.array([self._raw[1027:2052], self._raw[5127:6152]])
+            self._data_yy = np.where(self._data_yy != 0, self._data_yy, 1)
+            self._data_yy = 10 * np.log10(self._data_yy)
 
-        self._data_xy_re = np.array(
-            [self._raw[2052:3077], self._raw[6152:7177]]
-        )
-        self._data_xy_re = np.where(self._data_xy_re != 0, self._data_xy_re, 1)
+            self._data_xy_re = np.array(
+                [self._raw[2052:3077], self._raw[6152:7177]]
+            )
+            self._data_xy_re = np.where(self._data_xy_re != 0, self._data_xy_re, 1)
 
-        self._data_xy_im = np.array(
-            [self._raw[3077:4102], self._raw[7177:8202]]
-        )
-        self._data_xy_im = np.where(self._data_xy_im != 0, self._data_xy_im, 1)
+            self._data_xy_im = np.array(
+                [self._raw[3077:4102], self._raw[7177:8202]]
+            )
+            self._data_xy_im = np.where(self._data_xy_im != 0, self._data_xy_im, 1)
 
-        return timestamp
+            return timestamp
+        return 0
 
     def updatePlot(
             self,
