@@ -18,8 +18,7 @@ fi
 SPEED=${1}
 HWMON=1
 
-HWMON_DIR=/sys/bus/i2c/devices/0-0020/hwmon/hwmon${SPFRX_BSP_HWMON}
-#HWMON_DIR=/sys/devices/platform/soc/ffc02800.i2c/i2c-0/0-0020/hwmon/hwmon${HWMON}
+HWMON_DIR="/sys/bus/i2c/devices/0-0020/hwmon/hwmon${HWMON}"
 
 if [ ${SPEED} -lt 150 ] || [ -z ${SPEED} ]
 then
@@ -34,8 +33,6 @@ then
 fi
 
 echo "Setting fan speeds to : " ${SPEED}
-echo "${SPEED}" > ${HWMON_DIR}/pwm1
-echo "${SPEED}" > ${HWMON_DIR}/pwm2
-echo "${SPEED}" > ${HWMON_DIR}/pwm3
+ssh -T "root@${SPFRX_IP}" "echo ${SPEED} > ${HWMON_DIR}/pwm1 && echo ${SPEED} > ${HWMON_DIR}/pwm2 && echo ${SPEED} > ${HWMON_DIR}/pwm3"
 
 
