@@ -150,21 +150,6 @@ class SpectrumPlotter:
 
         logger_.info("Initializing the Gated Spectrometer Plotter")
 
-        logger_.info("Configuring Spectrometer pktcap to use LW bridge...")
-        try:
-            self._pktcap_proxy.command_read_write("spectrometer_set_bridge", 1)
-        except tango.DevFailed:
-            tango.Except.throw_exception(
-                "UNABLE TO SET LW BRIDGE MODE")
-            exit(1)
-        logger_.info("Enabling Spectrometer in Controller ds...")
-        try:
-            self._ctrl_proxy.command_read_write("SpectrometerCtrl", 1)
-        except tango.DevFailed:
-            tango.Except.throw_exception(
-                "UNABLE TO SET LW BRIDGE MODE")
-            exit(1)
-
         try:
             if not self._test_mode:
                 self._pktcap_proxy.write_attribute(
@@ -178,6 +163,21 @@ class SpectrumPlotter:
         except tango.DevFailed:
             tango.Except.throw_exception(
                 "UNABLE TO CONFIGURE PKTCAP PARAMETERS")
+            exit(1)
+
+        logger_.info("Configuring Spectrometer pktcap to use LW bridge...")
+        try:
+            self._pktcap_proxy.command_read_write("spectrometer_set_bridge", 1)
+        except tango.DevFailed:
+            tango.Except.throw_exception(
+                "UNABLE TO SET LW BRIDGE MODE")
+            exit(1)
+        logger_.info("Enabling Spectrometer in Controller ds...")
+        try:
+            self._ctrl_proxy.command_read_write("SpectrometerCtrl", 1)
+        except tango.DevFailed:
+            tango.Except.throw_exception(
+                "UNABLE TO SET LW BRIDGE MODE")
             exit(1)
 
         fig = self.createPlot()
