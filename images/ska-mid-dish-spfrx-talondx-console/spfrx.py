@@ -913,13 +913,13 @@ if __name__ == "__main__":
             f"Initiating attenuator config for BAND:{args.attenv[0]} "
             f"POL_V:{args.attenv[1]}"
         )
-        result = configureAtten(args.atten[0], POL_V, args.atten[2],
+        result = configureAtten(args.attenv[0], POL_V, args.attenv[2],
                                 args.device, args.name)
         if result:
-            logger_.info(f"BAND:{args.atten[0]} POL_V attenuator set to "
-                         f"{args.atten[2]} SUCCESSFULLY")
+            logger_.info(f"BAND:{args.attenv[0]} POL_V attenuator set to "
+                         f"{args.attenv[2]} SUCCESSFULLY")
         else:
-            logger_.warning(f"BAND:{args.atten[0]} "
+            logger_.warning(f"BAND:{args.attenv[0]} "
                             f"POL_V attenuator config FAILED")
 
     if args.attenh is not None:
@@ -927,13 +927,13 @@ if __name__ == "__main__":
             f"Initiating attenuator config for BAND:{args.attenh[0]} "
             f"POL_H:{args.attenh[1]}"
         )
-        result = configureAtten(args.atten[0], POL_H, args.atten[1],
+        result = configureAtten(args.attenh[0], POL_H, args.attenh[1],
                                 args.device, args.name)
         if result:
-            logger_.info(f"BAND:{args.atten[0]} POL_H attenuator set to "
-                         f"{args.atten[1]} SUCCESSFULLY")
+            logger_.info(f"BAND:{args.attenh[0]} POL_H attenuator set to "
+                         f"{args.attenh[1]} SUCCESSFULLY")
         else:
-            logger_.warning(f"BAND:{args.atten[0]} "
+            logger_.warning(f"BAND:{args.attenh[0]} "
                             f"POL_H attenuator config FAILED")
 
     if args.verify_band:
