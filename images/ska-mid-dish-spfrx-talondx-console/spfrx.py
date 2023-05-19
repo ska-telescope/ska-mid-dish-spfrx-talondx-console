@@ -10,8 +10,8 @@ from tango import DeviceProxy
 
 MIN_BAND = 1
 MAX_BAND = 3
-MIN_ATTEN = 0
-MAX_ATTEN = 31.75
+MIN_ATTEN : float = 0.0
+MAX_ATTEN : float = 31.75
 POL_H = 0
 POL_V = 1
 POLS = ("H", "V")
@@ -875,7 +875,7 @@ if __name__ == "__main__":
             f"SYNC:{args.synchronize_on_band_config}"
         )
         result = configureBand(
-            args.band,
+            int(args.band),
             args.synchronize_on_band_config,
             args.device,
             args.name)
@@ -890,7 +890,8 @@ if __name__ == "__main__":
             f"POL_H:{args.atten[1]} "
             f"POL_V:{args.atten[2]}"
         )
-        result = configureAtten(args.atten[0], POL_H, args.atten[1],
+        result = configureAtten(int(args.atten[0]), int(POL_H), 
+                                float(args.atten[1]),
                                 args.device, args.name)
         if result:
             logger_.info(f"BAND:{args.atten[0]} POL_H attenuator set to "
@@ -899,7 +900,8 @@ if __name__ == "__main__":
             logger_.warning(f"BAND:{args.atten[0]} "
                             f" POL_H attenuator config FAILED")
 
-        result = configureAtten(args.atten[0], POL_V, args.atten[2],
+        result = configureAtten(int(args.atten[0]), int(POL_V), 
+                                float(args.atten[2]),
                                 args.device, args.name)
         if result:
             logger_.info(f"BAND:{args.atten[0]} POL_V attenuator set to "
@@ -913,11 +915,12 @@ if __name__ == "__main__":
             f"Initiating attenuator config for BAND:{args.attenv[0]} "
             f"POL_V:{args.attenv[1]}"
         )
-        result = configureAtten(args.attenv[0], POL_V, args.attenv[2],
+        result = configureAtten(int(args.attenv[0]), int(POL_V), 
+                                float(args.attenv[1]),
                                 args.device, args.name)
         if result:
             logger_.info(f"BAND:{args.attenv[0]} POL_V attenuator set to "
-                         f"{args.attenv[2]} SUCCESSFULLY")
+                         f"{args.attenv[1]} SUCCESSFULLY")
         else:
             logger_.warning(f"BAND:{args.attenv[0]} "
                             f"POL_V attenuator config FAILED")
@@ -927,7 +930,8 @@ if __name__ == "__main__":
             f"Initiating attenuator config for BAND:{args.attenh[0]} "
             f"POL_H:{args.attenh[1]}"
         )
-        result = configureAtten(args.attenh[0], POL_H, args.attenh[1],
+        result = configureAtten(int(args.attenh[0]), int(POL_H), 
+                                float(args.attenh[1]),
                                 args.device, args.name)
         if result:
             logger_.info(f"BAND:{args.attenh[0]} POL_H attenuator set to "
@@ -950,14 +954,14 @@ if __name__ == "__main__":
             f"Requesting current configured attenuation settings for "
             f"BAND:{args.verify_atten}"
         )
-        attens = getConfiguredAtten(args.verify_atten, args.device, args.name)
+        attens = getConfiguredAtten(int(args.verify_atten), args.device, args.name)
         logger_.info(
             f"Configured attenuator values for BAND:{args.verify_atten}\n"
             f"  POL_H : {attens[0]}    POL_V : {attens[1]}"
         )
 
     if args.invert_spectral_sense:
-        band = args.invert_spectral_sense
+        band = int(args.invert_spectral_sense)
         logger_.info(
             "Inverting spectral sense for band {band}."
         )
@@ -971,7 +975,7 @@ if __name__ == "__main__":
                            "Band must be 1, 2 or 3")
 
     if args.revert_spectral_sense:
-        band = args.invert_spectral_sense
+        band = int(args.invert_spectral_sense)
         logger_.info(
             "Reverting spectral sense for band {band}."
         )
