@@ -17,10 +17,10 @@
             }
         },
         {
-            "name" : "ska-mid-spfrx-system",
+            "name" : "ska-mid-spfrx-system-ds",
             "source" : "conan",
             "conan" : {
-                "package_name" : "ska-mid-spfrx-system",
+                "package_name" : "ska-mid-spfrx-system-ds",
                 "user" : "nrc",
                 "channel" : "stable",
                 "version" : "1.1.0",
@@ -33,13 +33,13 @@
             }
         },
         {
-            "name" : "ska-talondx-bsp",
+            "name" : "ska-talondx-bsp-ds",
             "source" : "conan",
             "conan" : {
-                "package_name" : "ska-talondx-bsp",
+                "package_name" : "ska-talondx-bsp-ds",
                 "user" : "nrc",
                 "channel" : "stable",
-                "version" : "1.0.0",
+                "version" : "1.1.0",
                 "profile" : "conan_aarch64_profile.txt"
             },
             "git" : {
@@ -73,7 +73,7 @@
             "ip_address" : "192.168.8.200",
             "talon_first_connect_timeout" : 90,
             "ds_path" : "/usr/bin/",
-            "server_instance" : "ska001",
+            "server_instance" : "ska003",
             "devices" : [
                 "ska-mid-spfrx-controller-ds",
                 "ska-mid-spfrx-system-ds",
@@ -86,41 +86,41 @@
         "db_servers" : [
             {
                 "server" : "ska-mid-spfrx-controller-ds",
-                "instance" : "spfrx", 
+                "instance" : "spfrx-21", 
                 "name" : "spfrxpu",
-                "device" : "ska001",
+                "device" : "ska003",
                 "deviceList" : [
                     {
                         "class" : "SkaMidSpfrxControllerDs",
                         "alias" : "controller",
                         "devprop" : {
-                            "FpgaTemperatureDeviceName" : "ska001/spfrxpu/fpgatemp-1",
-                            "TalonDxBspFanControlDeviceName" : "ska001/spfrxpu/fan",
-                            "TalonDxBspTemperatureMonitorDeviceName" : "ska001/spfrxpu/temperature",
-                            "TalonDxBspMboRx1DeviceName" : "ska001/spfrxpu/mbo-rx1",
-                            "TalonDxBspMboRx2DeviceName" : "ska001/spfrxpu/mbo-rx2",
-                            "TalonDxBspMboRx3DeviceName" : "ska001/spfrxpu/mbo-rx3",
-                            "TalonDxBspMboRx4DeviceName" : "ska001/spfrxpu/mbo-rx4",
-                            "TalonDxBspMboRx5DeviceName" : "ska001/spfrxpu/mbo-rx5",
-                            "TalonDxBspMboTx1DeviceName" : "ska001/spfrxpu/mbo-tx1",
-                            "TalonDxBspMboTx2DeviceName" : "ska001/spfrxpu/mbo-tx2",
-                            "TalonDxBspMboTx3DeviceName" : "ska001/spfrxpu/mbo-tx3",
-                            "TalonDxBspMboTx4DeviceName" : "ska001/spfrxpu/mbo-tx4",
-                            "TalonDxBspMboTx5DeviceName" : "ska001/spfrxpu/mbo-tx5",
-                            "TalonDxBspLtm1DeviceName" : "ska001/spfrxpu/ltm-1",
-                            "TalonDxBspLtm2DeviceName" : "ska001/spfrxpu/ltm-2",
-                            "TalonDxBspLtm11DeviceName" : "ska001/spfrxpu/ltm-11",
-                            "TalonDxBspLtm12DeviceName" : "ska001/spfrxpu/ltm-12",
-                            "BandProcessor123DeviceName12" : "ska001/spfrxpu/bandprocessor123-0",
-                            "BandProcessor123DeviceName3": "ska001/spfrxpu/bandprocessor123-1",
-                            "DataReceiver123DeviceName12" : "ska001/spfrxpu/datarx123-0",
-                            "DataReceiver123DeviceName3" : "ska001/spfrxpu/datarx123-1",
-                            "DataStreamSwitchDeviceName" : "ska001/spfrxpu/mux",
-                            "GigabitEthernetDeviceName" : "ska001/spfrxpu/100gigeth",
-                            "PacketCaptureDeviceName" : "ska001/spfrxpu/pktcap",
-                            "PacketizerDeviceName" : "ska001/spfrxpu/packetizer",
-                            "ODL12DeviceName" : "ska001/spfrxpu/odl-12",
-                            "ODL3DeviceName" : "ska001/spfrxpu/odl-3",
+                            "FpgaTemperatureDeviceName" : "ska003/spfrxpu/fpgatemp-1",
+                            "TalonDxBspFanControlDeviceName" : "ska003/spfrxpu/fan",
+                            "TalonDxBspTemperatureMonitorDeviceName" : "ska003/spfrxpu/temperature",
+                            "TalonDxBspMboRx1DeviceName" : "ska003/spfrxpu/mbo-rx1",
+                            "TalonDxBspMboRx2DeviceName" : "ska003/spfrxpu/mbo-rx2",
+                            "TalonDxBspMboRx3DeviceName" : "ska003/spfrxpu/mbo-rx3",
+                            "TalonDxBspMboRx4DeviceName" : "ska003/spfrxpu/mbo-rx4",
+                            "TalonDxBspMboRx5DeviceName" : "ska003/spfrxpu/mbo-rx5",
+                            "TalonDxBspMboTx1DeviceName" : "ska003/spfrxpu/mbo-tx1",
+                            "TalonDxBspMboTx2DeviceName" : "ska003/spfrxpu/mbo-tx2",
+                            "TalonDxBspMboTx3DeviceName" : "ska003/spfrxpu/mbo-tx3",
+                            "TalonDxBspMboTx4DeviceName" : "ska003/spfrxpu/mbo-tx4",
+                            "TalonDxBspMboTx5DeviceName" : "ska003/spfrxpu/mbo-tx5",
+                            "TalonDxBspLtm1DeviceName" : "ska003/spfrxpu/ltm-1",
+                            "TalonDxBspLtm2DeviceName" : "ska003/spfrxpu/ltm-2",
+                            "TalonDxBspLtm11DeviceName" : "ska003/spfrxpu/ltm-11",
+                            "TalonDxBspLtm12DeviceName" : "ska003/spfrxpu/ltm-12",
+                            "BandProcessor123DeviceName12" : "ska003/spfrxpu/bandprocessor123-0",
+                            "BandProcessor123DeviceName3": "ska003/spfrxpu/bandprocessor123-1",
+                            "DataReceiver123DeviceName12" : "ska003/spfrxpu/datarx123-0",
+                            "DataReceiver123DeviceName3" : "ska003/spfrxpu/datarx123-1",
+                            "DataStreamSwitchDeviceName" : "ska003/spfrxpu/mux",
+                            "GigabitEthernetDeviceName" : "ska003/spfrxpu/100gigeth",
+                            "PacketCaptureDeviceName" : "ska003/spfrxpu/pktcap",
+                            "PacketizerDeviceName" : "ska003/spfrxpu/packetizer",
+                            "ODL12DeviceName" : "ska003/spfrxpu/odl-12",
+                            "ODL3DeviceName" : "ska003/spfrxpu/odl-3",
                             "B1PolHNominalAttenuation" : 10,  
                             "B2PolHNominalAttenuation" : 10,  
                             "B3PolHNominalAttenuation" : 10,  
@@ -155,13 +155,13 @@
                             "B5aNoiseDiodeTransitionHoldoffDefault" : 0,      
                             "B5bNoiseDiodeTransitionHoldoffDefault" : 0,  
                             "DishType" : 0,
-                            "DishID" : "psi",
+                            "DishID" : "SKA003",
                             "NominalKValue": 1,
                             "NominalSpectrometerInterval" : 1,
                             "LoggingLevelDefault" : 4,
                             "LoggingTargetsDefault" : [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ],
                             "SkaLevel" : "",
                             "GroupDefinitions" : ""
@@ -171,9 +171,9 @@
             },
             {
                 "server" : "ska-mid-spfrx-system-ds",
-                "instance" : "spfrx", 
+                "instance" : "spfrx-21", 
                 "name" : "spfrxpu",
-                "device" : "ska001",
+                "device" : "ska003",
                 "deviceList" : [
                     {
                         "class" : "SkaTalondxSysidDs",
@@ -185,7 +185,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -222,7 +222,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -248,7 +248,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -274,7 +274,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"]
+                                "device::ska003/lmc/dish_logger"]
                        }
                     },
                     {
@@ -294,7 +294,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -315,7 +315,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -329,7 +329,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -349,7 +349,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -364,7 +364,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -398,7 +398,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -432,7 +432,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     }
@@ -440,9 +440,9 @@
             },
             {
                 "server" : "ska-talondx-temperature-monitor-ds",
-                "instance" : "spfrx", 
+                "instance" : "spfrx-21", 
                 "name" : "spfrxpu",
-                "device" : "ska001",
+                "device" : "ska003",
                 "deviceList" : [
                     {
                         "class" : "SkaTalondxTemperatureMonitorDs",
@@ -454,7 +454,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     }
@@ -462,9 +462,9 @@
             },
             {
                 "server" : "ska-talondx-bsp-ds",
-                "instance" : "spfrx", 
+                "instance" : "spfrx-21", 
                 "name" : "spfrxpu",
-                "device" : "ska001",
+                "device" : "ska003",
                 "deviceList" : [
                     {
                         "class" : "SkaTalondxBspDsFan",
@@ -483,7 +483,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -504,7 +504,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -519,7 +519,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -534,7 +534,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -549,7 +549,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -564,7 +564,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -585,7 +585,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -594,7 +594,7 @@
                         "alias" : "ltm-1",
                         "devprop" : {
                             "ltm_id": 0,
-                            "device_directory": "/sys/bus/i2c/devices/",
+                            "device_directory": "/home/root/temp/",
                             "bus_id": 1,
                             "i2c_address": 64,
                             "hw_filter": "hwmon",
@@ -606,7 +606,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -615,7 +615,7 @@
                         "alias" : "ltm-2",
                         "devprop" : {
                             "ltm_id": 0,
-                            "device_directory": "/sys/bus/i2c/devices/",
+                            "device_directory": "/home/root/temp/",
                             "bus_id": 1,
                             "i2c_address": 65,
                             "hw_filter": "hwmon",
@@ -627,7 +627,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -636,7 +636,7 @@
                         "alias" : "ltm-11",
                         "devprop" : {
                             "ltm_id": 0,
-                            "device_directory": "/sys/bus/i2c/devices/",
+                            "device_directory": "/home/root/temp/",
                             "bus_id": 1,
                             "i2c_address": 74,
                             "hw_filter": "hwmon",
@@ -648,7 +648,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     },
@@ -657,7 +657,7 @@
                         "alias" : "ltm-12",
                         "devprop" : {
                             "ltm_id": 0,
-                            "device_directory": "/sys/bus/i2c/devices/",
+                            "device_directory": "/home/root/temp/",
                             "bus_id": 1,
                             "i2c_address": 75,
                             "hw_filter": "hwmon",
@@ -669,7 +669,7 @@
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
                                 "console::cout", 
-                                "device::ska001/spfrxpu/log-consumer-0"
+                                "device::ska003/lmc/dish_logger"
                             ]
                         }
                     }

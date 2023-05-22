@@ -13,23 +13,57 @@ PROJECT = ska-mid-dish-spfrx-talondx-console
 
 ARGS ?=
 
+# Set this environment variable to one of the two following values to choose 
+# the flavour of supporting software
+#   standalone : will require specification of a standalone TANGO DB
+#   cluster : (default) will require specification of k8s namespace information
+SPFRX_MODE ?= cluster
+
 # KUBE_NAMESPACE defines the Kubernetes Namespace that will be deployed to
 # using Helm.  If this does not already exist it will be created
-KUBE_NAMESPACE ?= ska-mid-dish-spfrx
-DOMAIN ?= cluster.local
+KUBE_NAMESPACE ?= mid-psi-ska-dish-lmc
+
+# SPFRX_TANGO_DOMAIN defines the default domain name for the TANGO DB. This is used
+# in constructing the TANGO_HOST for k8s operating mode
+SPFRX_TANGO_DOMAIN ?= cluster.local
+
+# SPFRX_ADDRESS is the default IP address for the target Talon-DX board
 SPFRX_ADDRESS ?= 192.168.8.200
-SPFRX_TANGO_INSTANCE ?= spfrx
+
+# SPFRX_STANDALONE_DB_IP is the default IP address for a standalone TANGO DB IP address
+SPFRX_STANDALONE_DB_IP ?= 10.165.3.22
+
+# SPFRX_TANGO_INSTANCE is the default instance name for the SPFRx operational registered
+# device servers within the TANGO DB
+SPFRX_TANGO_INSTANCE ?= spfrx-20
+
+# SPFRX_DEFAULT_LOGGING_LEVEL is the default logging level that all devices servers are
+# initiated with
 SPFRX_DEFAULT_LOGGING_LEVEL ?= 4
+
+# SPFRX_BIN is the default area for executable binaries and scripts. This default 
+# folder should be included in the Talon-DX OS PATH environment variable
 SPFRX_BIN ?= /usr/local/bin
-TANGO_PORT ?= 10000
+
+# SPFRX_TANGO_PORT is the default TANGO port number used for the TANGO DB
+SPFRX_TANGO_PORT ?= 10000
+
+# QSFP_CONTROL_PATH is the default absolute path for qsfp control applications. This 
+# should only ever be used when operating in standalone mode.
 QSFP_CONTROL_PATH ?= /usr/share/bittware/520nmx/cots/utilities/qsfp_control/bin
-FAN_SPEED ?= 255
-HWMON ?= 1
+
+# SPFRX_FAN_SPEED is the default PWM fan speed value (maximum)
+SPFRX_FAN_SPEED ?= 255
+
+# SPFRX_BSP_HWMON is the default HWMON index to use when searching for device driver
+# subfolders
+SPFRX_BSP_HWMON ?= 1
 
 # RELEASE_NAME is the release that all Kubernetes resources will be labelled
 # with
 RELEASE_NAME ?= test
 
+# OCI_IMAGES are the names of the OCI images found within this image repository
 OCI_IMAGES ?= ska-mid-dish-spfrx-talondx-console \
 	ska-mid-dish-spfrx-talondx-console-deploy \
 	ska-mid-dish-spfrx-talondx-console-plot
@@ -47,11 +81,17 @@ TIMEOUT = 86400
 
 CI_PROJECT_DIR ?= .
 
+# The default location of the users local .Xauthoriy file
 XAUTHORITY ?= $(HOME)/.Xauthority
+
+# The local hostname
 THIS_HOST := $(shell ip a 2> /dev/null | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
+
+# The local DISPLAY variable
 DISPLAY ?= $(THIS_HOST):0
+
 JIVE ?= true# Enable jive
-WEBJIVE ?= false# Enable Webjive
+WEBJIVE ?= false# Disable Webjive
 
 CI_PROJECT_PATH_SLUG ?= ska-mid-dish-spfrx-talondx-console
 CI_ENVIRONMENT_SLUG ?= ska-mid-dish-spfrx-talondx-console
@@ -86,67 +126,83 @@ PYTHON_SWITCHES_FOR_FLAKE8 = --ignore=E203,E402,E501,F407,W503
 
 PYTHON_LINT_TARGET = $(IMG_DIR)
 
+# Derive the SPFRX Database Pod from the specified KUBE_NAMESPACE
 SPFRX_DATABASE_POD = $(shell kubectl get svc -n $(KUBE_NAMESPACE) | grep databaseds | cut -d ' ' -f1)
-SPFRX_TANGO_HOST = $(SPFRX_DATABASE_POD).$(KUBE_NAMESPACE).svc.$(DOMAIN):$(TANGO_PORT)
+
+# Note that for now, the DISH LMC is deployed to SPFRX_TANGO_HOST=192.168.128.68:10000
+ifeq ($(SPFRX_MODE),cluster)
+# Derive the SPFRX_TANGO_HOST IP address and port number for CLUSTER mode 
+#  The format should be:
+#   TANGO_HOST=databaseds-tango-base.ci-ska-skampi-cbf-automated-pipeline-testing-mid.svc.cluster.local:10000
+	SPFRX_TANGO_HOST ?= $(SPFRX_DATABASE_POD).$(KUBE_NAMESPACE).svc.$(SPFRX_TANGO_DOMAIN):$(SPFRX_TANGO_PORT)
+else
+# Derive the SPFRX_TANGO_HOST IP address and port number for STANDALONE mode
+#  The format should be:
+#   TANGO_HOST=spfrx_standalone_db_ip:spfrx_tango_port
+	SPFRX_TANGO_HOST ?= $(SPFRX_STANDALONE_DB_IP):$(SPFRX_TANGO_PORT)
+endif
 
 run:  ## Run docker container
 	docker run --rm $(strip $(OCI_IMAGE)):$(release)
 
 # overwrite to use a different JSON
-SPFRX_CONFIG_FILE := spfrx-config.json
+SPFRX_CONFIG_FILE := spfrx-config-spfrx001.json
 SPFRX_CONFIG_FILE_PATH = $(IMG_DIR)/spfrx_config/$(SPFRX_CONFIG_FILE)
-SPFRX_LOCAL_DIR = $(PWD)/mnt/spfrx-config/
+SPFRX_LOCAL_DIR = $(PWD)/mnt/spfrx-config
 MNT_LOCAL_DIR = $(PWD)/mnt/
 
-# Call the scripts/config-spfrx-tango-host.sh script
+spfrx-login: ## login to the current SPFRX_IP as root
+	ssh root@$(SPFRX_ADDRESS)
+
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/config-spfrx-tango-host.sh script
 #  This will set the TANGO_HOST environment variable on the specified remote host
 #  The format should be:
 #   TANGO_HOST=databaseds-tango-base.ci-ska-skampi-cbf-automated-pipeline-testing-mid.svc.cluster.local:10000
 #  or similar, depending on the k8s configuration
 config-spfrx-tango-host: ## Set TANGO_HOST on SPFRx HPS
-	@. scripts/config-spfrx-tango-host.sh $(SPFRX_ADDRESS) $(KUBE_NAMESPACE) $(DOMAIN) $(TANGO_PORT)
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/config-spfrx-tango-host.sh $(SPFRX_ADDRESS) $(SPFRX_TANGO_HOST)
 
-# Call the scripts/spfrx-deploy-artifacts.sh script
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-deploy-artifacts.sh script
 #  This will copy required shell scripts to the specified remote SPFRx HPS host
 spfrx-deploy-artifacts: ## Deploy SPFRx artefacts to HPS
-	@. scripts/spfrx-deploy-artifacts.sh $(SPFRX_ADDRESS) $(SPFRX_LOCAL_DIR) $(SPFRX_BIN)
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-deploy-artifacts.sh $(SPFRX_ADDRESS) $(SPFRX_LOCAL_DIR) $(SPFRX_BIN)
 
-# Call the scripts/spfrx-rxpu-ops.sh script to bring UP the RXPU
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-rxpu-ops.sh script to bring UP the RXPU
 #  This will perform an ssh command to start the RXPU TANGO device servers.
-spfrx-start: config-spfrx-tango-host ## Start SPFRx TANGO device servers
-	@. scripts/spfrx-rxpu-ops.sh up $(SPFRX_ADDRESS) $(SPFRX_BIN) $(SPFRX_TANGO_INSTANCE) $(SPFRX_DEFAULT_LOGGING_LEVEL)
+spfrx-start: ## Start SPFRx TANGO device servers
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-remote-start.sh ${SPFRX_TANGO_HOST} $(SPFRX_ADDRESS) $(SPFRX_BIN) $(SPFRX_TANGO_INSTANCE) $(SPFRX_DEFAULT_LOGGING_LEVEL) &
 
-# Call the scripts/spfrx-rxpu-ops.sh script to take DOWN the RXPU
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-rxpu-ops.sh script to take DOWN the RXPU
 #  This will perform an ssh command to stop the RXPU TANGO device servers.
-spfrx-stop: config-spfrx-tango-host ## Stop SPFRx TANGO device servers
-	@. scripts/spfrx-rxpu-ops.sh down $(SPFRX_ADDRESS) $(SPFRX_BIN) $(SPFRX_TANGO_INSTANCE) $(SPFRX_DEFAULT_LOGGING_LEVEL)
+spfrx-stop: ## Stop SPFRx TANGO device servers
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-remote-stop.sh $(SPFRX_ADDRESS) $(SPFRX_BIN)
 
-# Call the scripts/spfrx-host-qsfp-hipower.sh script
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-host-qsfp-hipower.sh script
 #  This will call the bittware function on the local host to engage hi-power mode
 spfrx-qsfp-hi-power: ## Set local Bittware to hi-power mode
-	@. scripts/spfrx-host-qsfp-hipower.sh ${QSFP_CONTROL_PATH}
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-host-qsfp-hipower.sh ${QSFP_CONTROL_PATH}
 
-# Call the scripts/spfrx-get-fanspeed.sh script
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-get-fanspeed.sh script
 #  This will return PWM fan settings for fans 1, 2 and 3
-#  use HWMON=# to provide the hwmon index if required (default HWMON is 1)
+#  use SPFRX_BSP_HWMON=# to provide the hwmon index if required (default SPFRX_BSP_HWMON is 1)
 spfrx-get-fanspeed: ## Retrieve fan speed settings for RXPU
-	@. scripts/spfrx-get-fanspeed.sh ${SPFRX_ADDRESS} ${HWMON}
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-get-fanspeed.sh ${SPFRX_ADDRESS} ${SPFRX_BSP_HWMON}
 
-# Call the scripts/spfrx-set-fanspeed.sh script
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-set-fanspeed.sh script
 #  This will return PWM fan settings for fans 1, 2 and 3
-#  use FAN_SPEED=### to indicate the speed 
-#  use HWMON=# to provide the hwmon index if required (default HWMON is 1)
+#  use SPFRX_FAN_SPEED=### to indicate the speed 
+#  use SPFRX_BSP_HWMON=# to provide the hwmon index if required (default SPFRX_BSP_HWMON is 1)
 spfrx-set-fanspeed: ## Set fan speed settings for RXPU
-	@. scripts/spfrx-set-fanspeed.sh ${SPFRX_ADDRESS} ${FAN_SPEED} ${HWMON}
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/spfrx-set-fanspeed.sh ${SPFRX_ADDRESS} ${SPFRX_FAN_SPEED} ${SPFRX_BSP_HWMON}
 
-# Call the scripts/program-bitstream-remote script
+# Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/program-bitstream-remote script
 #  This will program the bitstream remotely on the SPFRx TALON-DX HPS
 spfrx-program-bitstream: ## Remotely configure the SPFRx FPGA
-	@. scripts/program-bitstream.sh ${TAR_ARCHIVE} ${SPFRX_ADDRESS}
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/program-bitstream-remote.sh ${TAR_ARCHIVE} ${SPFRX_ADDRESS}
 
 ARTIFACTS_POD = $(shell kubectl -n $(KUBE_NAMESPACE) get pod --no-headers --selector=vol=artifacts-admin -o custom-columns=':metadata.name')
 
-x-jive: config-tango-dns  config-spfrx-tango-host ## Run Jive with X11
+x-jive: config-spfrx-tango-host ## Run Jive with X11
 	@chmod 644 $(HOME)/.Xauthority
 	@docker run --rm \
 	--network host \
@@ -154,22 +210,19 @@ x-jive: config-tango-dns  config-spfrx-tango-host ## Run Jive with X11
 	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
 	--volume /tmp/.X11-unix:/tmp/.X11-unix \
 	--volume $(HOME)/.Xauthority:/home/tango/.Xauthority \
-	$(ADD_HOSTS) artefact.skatelescope.org/ska-tango-images-tango-jive:7.22.5 &
+	artefact.skatelescope.org/ska-tango-images-tango-jive:7.22.5 &
 
 x-pogo:  ## Run POGO with X11
-	@echo DS_XMI=$(DS_XMI)
 	@chmod 644 $(HOME)/.Xauthority
 	@docker run --rm \
 	--network host \
 	--env DISPLAY \
 	--volume /tmp/.X11-unix:/tmp/.X11-unix \
 	--volume $(HOME)/.Xauthority:/home/tango/.Xauthority \
-	--volume $(PWD)/pogo/$(DS_XMI).xmi:/home/tango/ds/$(DS_XMI).xmi:rw \
-	--volume $(PWD)/pogo/SkaMidTalondxHpsBase.xmi:/home/tango/ds/SkaMidTalondxHpsBase.xmi:rw \
 	--volume $(PWD)/pogo/.pogorc:/home/tango/.pogorc:rw \
-	--volume $(PWD)/pogo/:/home/tango/pogo/:rw \
+	--volume $(PWD):/home/tango/pogo/:rw \
 	--user tango \
-	$(ADD_HOSTS) artefact.skatelescope.org/ska-tango-images-tango-pogo:9.6.36 &
+	artefact.skatelescope.org/ska-tango-images-tango-pogo:9.6.36 &
 
 run-interactive: config-spfrx-tango-host ## Run docker in interactive mode
 	docker run --rm -it \
@@ -193,32 +246,32 @@ config-db: config-spfrx-tango-host ## Configure the database
 	--network host \
 	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --config-db
+	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --config-db $(ARGS)
 
 generate-spfrx-config: ## Generate spfrx-config.json file
 	@docker run --rm \
 	--network host \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --generate-spfrx-config
+	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --generate-spfrx-config $(ARGS)
 
 download-artifacts:  ## Download artifacts from CAR 
 	mkdir -p $(SPFRX_LOCAL_DIR)
 	@docker run --rm \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --download-artifacts
+	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --download-artifacts $(ARGS)
 
 talon-version: config-spfrx-tango-host ## Display SPFRx TANGO device server version information
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
-	$(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-version
+	$(strip $(OCI_IMAGE)):$(release) ./spfrx.py --version_tango_all
 
 talon-status: config-spfrx-tango-host ## Display SPFRx TANGO device server status information
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
 	--env TERM=xterm \
-	$(strip $(OCI_IMAGE)):$(release) ./spfrx-talondx.py --talon-status
+	$(strip $(OCI_IMAGE)):$(release) ./spfrx.py --status_tango_all
 
 spfrx: config-spfrx-tango-host ## SPFRx HPS Console application
 	@echo $(Arguments) & \

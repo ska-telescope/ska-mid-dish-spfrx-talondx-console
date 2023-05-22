@@ -61,12 +61,11 @@ class Version:
 
 INTERNAL_BASE_DIR = "/app/images"
 OCI_IMAGE_NAME = "ska-mid-dish-spfrx-talondx-console-deploy"
-CONFIG_FILE = "spfrx-config.json"
-BOARDMAP_FILE = "spfrx_boardmap.json"
+CONFIG_FILE = "spfrx-config-ska001.json"
+BOARDMAP_FILE = "spfrx_boardmap_ska001.json"
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 ARTIFACTS_DIR = os.path.join(PROJECT_DIR, "artifacts")
-SPFRX_CONFIG_FILE = os.path.join(ARTIFACTS_DIR, CONFIG_FILE)
 DOWNLOAD_CHUNK_BYTES = 1024
 
 TALONDX_STATUS_OUTPUT_DIR = os.environ.get("TALONDX_STATUS_OUTPUT_DIR")
@@ -81,16 +80,18 @@ RAW_REPO_USER = os.environ.get("RAW_USER_ACCOUNT")
 RAW_REPO_PASS = os.environ.get("RAW_USER_PASS")
 
 
-def generate_spfrx_config():
+def generate_spfrx_config(
+        boardmap_file : str = BOARDMAP_FILE,
+        config_file : str = CONFIG_FILE
+    ) -> None:
     """
-    Reads and displays the state and status of each HPS Tango device
-    running on the Talon DX boards, as specified in the configuration
-    commands -- ref `"config_commands"`in the spfrx-config JSON file.
+    Generates the config JSON file for the SPFRx
 
-    :param boards: Command delimited list of boards to deploy
+    :param boardmap_file: a boardmap JSON configuration file
+    :param config_file: the output configuration JSON file name
     """
     with open(
-        f"{INTERNAL_BASE_DIR}/{OCI_IMAGE_NAME}/spfrx_config/{BOARDMAP_FILE}",
+        f"{INTERNAL_BASE_DIR}/{OCI_IMAGE_NAME}/spfrx_config/{boardmap_file}",
         "r",
     ) as config_map:
         config_map_json = json.load(config_map)
@@ -108,7 +109,7 @@ def generate_spfrx_config():
 
         spfrx_config_dict["tango_db"] = {"db_servers": db_servers_list}
         spfrx_config_file = open(
-            f"{INTERNAL_BASE_DIR}/{OCI_IMAGE_NAME}/artifacts/{CONFIG_FILE}",
+            f"{INTERNAL_BASE_DIR}/{OCI_IMAGE_NAME}/artifacts/{config_file}",
             "w",
         )
         json.dump(spfrx_config_dict, spfrx_config_file, indent=6)
@@ -288,22 +289,44 @@ if __name__ == "__main__":
         help="download the Tango DS binaries from the SKA CAR",
         action="store_true",
     )
+    parser.add_argument(
+        "--boardmap_file",
+        type=str,
+        metavar="BOARDMAP_FILE_NAME",
+        default=BOARDMAP_FILE,
+        help=f"Specify board map file (default is {BOARDMAP_FILE})",
+    )
+    parser.add_argument(
+        "--config_file",
+        type=str,
+        metavar="CONFIG_OUTPUT_FILE_NAME",
+        default=CONFIG_FILE,
+        help=f"Specify config output file (default is {CONFIG_FILE})",
+    )
     args = parser.parse_args()
 
     if args.config_db:
+        spfrx_config_file=os.path.join(ARTIFACTS_DIR, args.config_file)
+        config = TalonDxConfig(config_file=spfrx_config_file)
         logger_.info(
             f"Configure DB - TANGO_HOST = "
-            f'{tango.ApiUtil.get_env_var("TANGO_HOST")}'
+            f"{tango.ApiUtil.get_env_var('TANGO_HOST')} "
+            f"using config {spfrx_config_file}"
         )
-        config = TalonDxConfig(config_file=SPFRX_CONFIG_FILE)
         configure_tango_db(config.tango_db())
     elif args.download_artifacts:
-        logger_.info("Download Artifacts")
-        config = TalonDxConfig(config_file=SPFRX_CONFIG_FILE)
+        spfrx_config_file=os.path.join(ARTIFACTS_DIR, args.config_file)
+        logger_.info(
+            f"Download Artifacts using config {spfrx_config_file}"
+            )
+        config = TalonDxConfig(config_file=spfrx_config_file)
         config.export_config(ARTIFACTS_DIR)
         download_ds_binaries(config.ds_binaries())
     elif args.generate_spfrx_config:
-        logger_.info("Generate spfrx-config.json file")
-        generate_spfrx_config()
+        logger_.info(f"Generate SPFRx Configuration JSON file {args.config_file}")
+        generate_spfrx_config(
+            args.boardmap_file,
+            args.config_file
+        )
     else:
         logger_.info("Hello from Mid DISH SPFRx Deployer")

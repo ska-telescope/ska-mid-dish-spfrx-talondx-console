@@ -1,0 +1,680 @@
+{
+    "ds_binaries" : [
+        {
+            "name" : "ska-mid-spfrx-controller-ds",
+            "source" : "conan",
+            "conan" : {
+                "package_name" : "ska-mid-spfrx-controller-ds",
+                "user" : "nrc",
+                "channel" : "stable",
+                "version" : "1.0.3",
+                "profile" : "conan_aarch64_profile.txt"
+            },
+            "git" : {
+                "git_project_id": 704,
+                "git_branch" : "main",
+                "git_pipeline_job" : "export"
+            }
+        },
+        {
+            "name" : "ska-mid-spfrx-system-ds",
+            "source" : "conan",
+            "conan" : {
+                "package_name" : "ska-mid-spfrx-system-ds",
+                "user" : "nrc",
+                "channel" : "stable",
+                "version" : "1.1.0",
+                "profile" : "conan_aarch64_profile.txt"
+            },
+            "git" : {
+                "git_project_id": 772,
+                "git_branch" : "main",
+                "git_pipeline_job" : "export"
+            }
+        },
+        {
+            "name" : "ska-talondx-bsp-ds",
+            "source" : "conan",
+            "conan" : {
+                "package_name" : "ska-talondx-bsp-ds",
+                "user" : "nrc",
+                "channel" : "stable",
+                "version" : "1.1.0",
+                "profile" : "conan_aarch64_profile.txt"
+            },
+            "git" : {
+                "git_project_id": 655,
+                "git_branch" : "main",
+                "git_pipeline_job" : "export"
+            }
+        },
+        {
+            "name" : "ska-talondx-temperature-monitor-ds",
+            "source" : "conan",
+            "conan" : {
+                "package_name" : "ska-talondx-temperature-monitor-ds",
+                "user" : "nrc",
+                "channel" : "stable",
+                "version" : "1.0.1",
+                "profile" : "conan_aarch64_profile.txt"
+            },
+            "git" : {
+                "git_project_id": 717,
+                "git_branch" : "main",
+                "git_pipeline_job" : "export"
+            }
+        }
+    ],
+    "config_commands" : {
+        "1" : 
+        {
+            "description" : "Configure the SPFRx Talon-DX for operation.",
+            "target" : "spfrx",
+            "ip_address" : "192.168.8.200",
+            "talon_first_connect_timeout" : 90,
+            "ds_path" : "/usr/bin/",
+            "server_instance" : "ska002",
+            "devices" : [
+                "ska-mid-spfrx-controller-ds",
+                "ska-mid-spfrx-system-ds",
+                "ska-talondx-temperature-monitor-ds",
+                "ska-talondx-bsp-ds"
+            ]
+        }
+    },
+    "tango-db" : {
+        "db_servers" : [
+            {
+                "server" : "ska-mid-spfrx-controller-ds",
+                "instance" : "spfrx-21", 
+                "name" : "spfrxpu",
+                "device" : "ska002",
+                "deviceList" : [
+                    {
+                        "class" : "SkaMidSpfrxControllerDs",
+                        "alias" : "controller",
+                        "devprop" : {
+                            "FpgaTemperatureDeviceName" : "ska002/spfrxpu/fpgatemp-1",
+                            "TalonDxBspFanControlDeviceName" : "ska002/spfrxpu/fan",
+                            "TalonDxBspTemperatureMonitorDeviceName" : "ska002/spfrxpu/temperature",
+                            "TalonDxBspMboRx1DeviceName" : "ska002/spfrxpu/mbo-rx1",
+                            "TalonDxBspMboRx2DeviceName" : "ska002/spfrxpu/mbo-rx2",
+                            "TalonDxBspMboRx3DeviceName" : "ska002/spfrxpu/mbo-rx3",
+                            "TalonDxBspMboRx4DeviceName" : "ska002/spfrxpu/mbo-rx4",
+                            "TalonDxBspMboRx5DeviceName" : "ska002/spfrxpu/mbo-rx5",
+                            "TalonDxBspMboTx1DeviceName" : "ska002/spfrxpu/mbo-tx1",
+                            "TalonDxBspMboTx2DeviceName" : "ska002/spfrxpu/mbo-tx2",
+                            "TalonDxBspMboTx3DeviceName" : "ska002/spfrxpu/mbo-tx3",
+                            "TalonDxBspMboTx4DeviceName" : "ska002/spfrxpu/mbo-tx4",
+                            "TalonDxBspMboTx5DeviceName" : "ska002/spfrxpu/mbo-tx5",
+                            "TalonDxBspLtm1DeviceName" : "ska002/spfrxpu/ltm-1",
+                            "TalonDxBspLtm2DeviceName" : "ska002/spfrxpu/ltm-2",
+                            "TalonDxBspLtm11DeviceName" : "ska002/spfrxpu/ltm-11",
+                            "TalonDxBspLtm12DeviceName" : "ska002/spfrxpu/ltm-12",
+                            "BandProcessor123DeviceName12" : "ska002/spfrxpu/bandprocessor123-0",
+                            "BandProcessor123DeviceName3": "ska002/spfrxpu/bandprocessor123-1",
+                            "DataReceiver123DeviceName12" : "ska002/spfrxpu/datarx123-0",
+                            "DataReceiver123DeviceName3" : "ska002/spfrxpu/datarx123-1",
+                            "DataStreamSwitchDeviceName" : "ska002/spfrxpu/mux",
+                            "GigabitEthernetDeviceName" : "ska002/spfrxpu/100gigeth",
+                            "PacketCaptureDeviceName" : "ska002/spfrxpu/pktcap",
+                            "PacketizerDeviceName" : "ska002/spfrxpu/packetizer",
+                            "ODL12DeviceName" : "ska002/spfrxpu/odl-12",
+                            "ODL3DeviceName" : "ska002/spfrxpu/odl-3",
+                            "B1PolHNominalAttenuation" : 10,  
+                            "B2PolHNominalAttenuation" : 10,  
+                            "B3PolHNominalAttenuation" : 10,  
+                            "B4PolHNominalAttenuation" : 10,  
+                            "B5aPolHNominalAttenuation" : 10,  
+                            "B5bPolHNominalAttenuation" : 10,  
+                            "B1PolVNominalAttenuation" : 10,  
+                            "B2PolVNominalAttenuation" : 10,  
+                            "B3PolVNominalAttenuation" : 10,  
+                            "B4PolVNominalAttenuation" : 10,  
+                            "B5aPolVNominalAttenuation" : 10,  
+                            "B5bPolVNominalAttenuation" : 10,  
+                            "B1NominalGain" : 0,
+                            "B2NominalGain" : 0,
+                            "B3NominalGain" : 0,
+                            "B4NominalGain" : 0,
+                            "B5aNominalGain" : 0,
+                            "B5bNominalGain" : 0,
+                            "B1MaxGain" : 0,
+                            "B2MaxGain" : 0,
+                            "B3MaxGain" : 0,
+                            "B4MaxGain" : 0,
+                            "B5aMaxGain" : 0,
+                            "B5bMaxGain" : 0,
+                            "NoiseDiodeModeDefault" : 0,
+                            "PeriodicNoiseDiodeParsDefault" : 0,
+                            "PseudoRandomNoiseDiodeParsDefault" : 0,
+                            "B1NoiseDiodeTransitionHoldoffDefault" : 0,      
+                            "B2NoiseDiodeTransitionHoldoffDefault" : 0,      
+                            "B3NoiseDiodeTransitionHoldoffDefault" : 0,      
+                            "B4NoiseDiodeTransitionHoldoffDefault" : 0,      
+                            "B5aNoiseDiodeTransitionHoldoffDefault" : 0,      
+                            "B5bNoiseDiodeTransitionHoldoffDefault" : 0,  
+                            "DishType" : 0,
+                            "DishID" : "SKA002",
+                            "NominalKValue": 1,
+                            "NominalSpectrometerInterval" : 1,
+                            "LoggingLevelDefault" : 4,
+                            "LoggingTargetsDefault" : [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ],
+                            "SkaLevel" : "",
+                            "GroupDefinitions" : ""
+                        }
+                    }
+                ]
+            },
+            {
+                "server" : "ska-mid-spfrx-system-ds",
+                "instance" : "spfrx-21", 
+                "name" : "spfrxpu",
+                "device" : "ska002",
+                "deviceList" : [
+                    {
+                        "class" : "SkaTalondxSysidDs",
+                        "alias" : "sysid",
+                        "devprop" : {
+                            "sys_id_filename" : "/dev/mem",
+                            "sys_id_bridge_offset" : 4177526784,
+                            "sys_id_firmware_offset" : 64,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaTalondx100GigabitEthernetDs",
+                        "alias" : "100gigeth",
+                        "devprop" : {
+                            "instance_id" : 0,
+                            "default_loopback" : 1,
+                            "Ethernet_100G_PHY_filename" : "/dev/mem",
+                            "Ethernet_100G_PHY_bridge_offset" : 4177526784,
+                            "Ethernet_100G_PHY_firmware_offset" : 2048,
+                            "Ethernet_100G_rx_MAC_filename" : "/dev/mem",
+                            "Ethernet_100G_rx_MAC_bridge_offset" : 4177526784,
+                            "Ethernet_100G_rx_MAC_firmware_offset" : 512,
+                            "Ethernet_100G_rx_RSFEC_filename" : "/dev/mem",
+                            "Ethernet_100G_rx_RSFEC_bridge_offset" : 4177526784,
+                            "Ethernet_100G_rx_RSFEC_firmware_offset" : 576,
+                            "Ethernet_100G_rx_statistics_filename" : "/dev/mem",
+                            "Ethernet_100G_rx_statistics_bridge_offset" : 4177526784,
+                            "Ethernet_100G_rx_statistics_firmware_offset" : 2560,
+                            "Ethernet_100G_tx_MAC_filename" : "/dev/mem",
+                            "Ethernet_100G_tx_MAC_bridge_offset" : 4177526784,
+                            "Ethernet_100G_tx_MAC_firmware_offset" : 640,
+                            "Ethernet_100G_tx_RSFEC_filename" : "/dev/mem",
+                            "Ethernet_100G_tx_RSFEC_bridge_offset" : 4177526784,
+                            "Ethernet_100G_tx_RSFEC_firmware_offset" : 704,
+                            "Ethernet_100G_tx_statistics_filename" : "/dev/mem",
+                            "Ethernet_100G_tx_statistics_bridge_offset" : 4177526784,
+                            "Ethernet_100G_tx_statistics_firmware_offset" : 3072,
+                            "qsfp_ctrl_filename" : "/dev/mem",
+                            "qsfp_ctrl_bridge_offset" : 4177526784,
+                            "qsfp_ctrl_firmware_offset" : 0,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaMidSpfrxBandProcessor123Ds",
+                        "alias" : "bandprocessor123-0",
+                        "devprop" : {
+                            "instance_id" : 0,
+                            "NominalKValue" : 1,
+                            "nd_ctrl_filename" : "/dev/mem",
+                            "nd_ctrl_bridge_offset" : 4177526784,
+                            "nd_ctrl_firmware_offset" : 8,
+                            "spfrx_band123_filename" : "/dev/mem",
+                            "spfrx_band123_bridge_offset" : 4177526784,
+                            "spfrx_band123_firmware_offset" : 896 ,
+                            "spfrx_ppso_fifo_filename" : "/dev/mem",
+                            "spfrx_ppso_fifo_bridge_offset" : 4177526784,
+                            "spfrx_ppso_fifo_firmware_offset" : 4096,
+                            "spfrx_pwr_mtr_data_filename" : "/dev/mem",
+                            "spfrx_pwr_mtr_data_bridge_offset" : 4177526784,
+                            "spfrx_pwr_mtr_data_firmware_offset" : 8192,
+                            "spfrx_polarity_inv_value" : 0,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaMidSpfrxBandProcessor123Ds",
+                        "alias" : "bandprocessor123-1",
+                        "devprop" : {
+                            "instance_id" : 1,
+                            "NominalKValue" : 1,
+                            "nd_ctrl_filename" : "/dev/mem",
+                            "nd_ctrl_bridge_offset" : 4177526784,
+                            "nd_ctrl_firmware_offset" : 8,
+                            "spfrx_band123_filename" : "/dev/mem",
+                            "spfrx_band123_bridge_offset" : 4177526784,
+                            "spfrx_band123_firmware_offset" : 1024,
+                            "spfrx_ppso_fifo_filename" : "/dev/mem",
+                            "spfrx_ppso_fifo_bridge_offset" : 4177526784,
+                            "spfrx_ppso_fifo_firmware_offset" : 5120,
+                            "spfrx_pwr_mtr_data_filename" : "/dev/mem",
+                            "spfrx_pwr_mtr_data_bridge_offset" : 4177526784,
+                            "spfrx_pwr_mtr_data_firmware_offset" : 12288,
+                            "spfrx_polarity_inv_value" : 0,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"]
+                       }
+                    },
+                    {
+                        "class" : "SkaMidSpfrxDataReceiver123Ds",
+                        "alias" : "datarx123-0",
+                        "devprop" : {
+                            "instance_id" : 0,
+                            "intel_jesd204_rx_filename" : "/dev/mem",
+                            "intel_jesd204_rx_bridge_offset" : 4177526784,
+                            "intel_jesd204_rx_firmware_offset" : 6144,
+                            "jesd_rst_status_filename" : "/dev/mem",
+                            "jesd_rst_status_bridge_offset" : 4177526784,
+                            "jesd_rst_status_firmware_offset" : 32,
+                            "jesd_rx_ctrl_filename" : "/dev/mem",
+                            "jesd_rx_ctrl_bridge_offset" : 4177526784,
+                            "jesd_rx_ctrl_firmware_offset" : 1280,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaMidSpfrxDataReceiver123Ds",
+                        "alias" : "datarx123-1",
+                        "devprop" : {
+                            "instance_id" : 1,
+                            "intel_jesd204_rx_filename" : "/dev/mem",
+                            "intel_jesd204_rx_bridge_offset" : 4177526784,
+                            "intel_jesd204_rx_firmware_offset" : 7168,
+                            "jesd_rst_status_filename" : "/dev/mem",
+                            "jesd_rst_status_bridge_offset" : 4177526784,
+                            "jesd_rst_status_firmware_offset" : 48,
+                            "jesd_rx_ctrl_filename" : "/dev/mem",
+                            "jesd_rx_ctrl_bridge_offset" : 4177526784,
+                            "jesd_rx_ctrl_firmware_offset" : 1536,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaMidSpfrxDataStreamSwitchDs",
+                        "alias" : "mux",
+                        "devprop" : {
+                            "spfrx_stream_mux_filename" : "/dev/mem",
+                            "spfrx_stream_mux_bridge_offset" : 4177526784,
+                            "spfrx_stream_mux_firmware_offset" : 160,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaMidSpfrxPacketCaptureDs",
+                        "alias" : "pktcap",
+                        "devprop" : {
+                            "mem_cap_filename" : "/dev/mem",
+                            "mem_cap_bridge_offset" : 4177526784,
+                            "mem_cap_firmware_offset" : 448,
+                            "mem_cap_hp_data_filename" : "/dev/mem",
+                            "mem_cap_hp_data_bridge_offset" : 2147483648,
+                            "mem_cap_hp_data_firmware_offset" : 0,
+                            "mem_cap_lw_data_filename" : "/dev/mem",
+                            "mem_cap_lw_data_bridge_offset" : 4177526784,
+                            "mem_cap_lw_data_firmware_offset" : 16384,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaMidSpfrxPacketizerDs",
+                        "alias" : "packetizer",
+                        "devprop" : {
+                            "NominalKValue" : 1,
+                            "spfrx_packetizer_filename" : "/dev/mem",
+                            "spfrx_packetizer_bridge_offset" : 4177526784,
+                            "spfrx_packetizer_firmware_offset" : 1152,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaMidSpfrxOdl12Ds",
+                        "alias" : "odl-12",
+                        "devprop" : {
+                            "instance_id" : 0,
+                            "tlk_rx_ctrl_filename" : "/dev/mem",
+                            "tlk_rx_ctrl_bridge_offset" : 4177526784,
+                            "tlk_rx_ctrl_firmware_offset" : 192,
+                            "tlk_rst_status_filename" : "/dev/mem",
+                            "tlk_rst_status_bridge_offset" : 4177526784,
+                            "tlk_rst_status_firmware_offset" : 96,
+                            "tlk_tx_ctrl_filename" : "/dev/mem",
+                            "tlk_tx_ctrl_bridge_offset" : 4177526784,
+                            "tlk_tx_ctrl_firmware_offset" : 16,
+                            "intel_spi_adc_filename" : "/dev/mem",
+                            "intel_spi_adc_bridge_offset" : 4177526784,
+                            "intel_spi_adc_firmware_offset" : 256,
+                            "intel_spi_slow_adc_filename" : "/dev/mem",
+                            "intel_spi_slow_adc_bridge_offset" : 4177526784,
+                            "intel_spi_slow_adc_firmware_offset" : 320,
+                            "intel_spi_util_filename" : "/dev/mem",
+                            "intel_spi_util_bridge_offset" : 4177526784,
+                            "intel_spi_util_firmware_offset" : 288,
+                            "intel_i2c_filename" : "/dev/mem",
+                            "intel_i2c_bridge_offset" : 4177526784,
+                            "intel_i2c_firmware_offset" : 768,
+                            "ecp_status" : 1,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaMidSpfrxOdl3Ds",
+                        "alias" : "odl-3",
+                        "devprop" : {
+                            "instance_id" : 1,
+                            "tlk_rx_ctrl_filename" : "/dev/mem",
+                            "tlk_rx_ctrl_bridge_offset" : 4177526784,
+                            "tlk_rx_ctrl_firmware_offset" : 224,
+                            "tlk_rst_status_filename" : "/dev/mem",
+                            "tlk_rst_status_bridge_offset" : 4177526784,
+                            "tlk_rst_status_firmware_offset" : 128,
+                            "tlk_tx_ctrl_filename" : "/dev/mem",
+                            "tlk_tx_ctrl_bridge_offset" : 4177526784,
+                            "tlk_tx_ctrl_firmware_offset" : 24,
+                            "intel_spi_adc_filename" : "/dev/mem",
+                            "intel_spi_adc_bridge_offset" : 4177526784,
+                            "intel_spi_adc_firmware_offset" : 352,
+                            "intel_spi_slow_adc_filename" : "/dev/mem",
+                            "intel_spi_slow_adc_bridge_offset" : 4177526784,
+                            "intel_spi_slow_adc_firmware_offset" : 416,
+                            "intel_spi_util_filename" : "/dev/mem",
+                            "intel_spi_util_bridge_offset" : 4177526784,
+                            "intel_spi_util_firmware_offset" : 384,
+                            "intel_i2c_filename" : "/dev/mem",
+                            "intel_i2c_bridge_offset" : 4177526784,
+                            "intel_i2c_firmware_offset" : 832,
+                            "ecp_status" : 1,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "server" : "ska-talondx-temperature-monitor-ds",
+                "instance" : "spfrx-21", 
+                "name" : "spfrxpu",
+                "device" : "ska002",
+                "deviceList" : [
+                    {
+                        "class" : "SkaTalondxTemperatureMonitorDs",
+                        "alias" : "fpgatemp-1",
+                        "devprop" : {
+                            "bittware_temp_sensor_filename": "/dev/mem",
+                            "bittware_temp_sensor_bridge_offset": 4177526784,
+                            "bittware_temp_sensor_firmware_offset": 1048576,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "server" : "ska-talondx-bsp-ds",
+                "instance" : "spfrx-21", 
+                "name" : "spfrxpu",
+                "device" : "ska002",
+                "deviceList" : [
+                    {
+                        "class" : "SkaTalondxBspDsFan",
+                        "alias" : "fan",
+                        "devprop" : {
+                            "device_id": 1,
+                            "device_directory": "/sys/bus/i2c/devices/",
+                            "bus_id": 0,
+                            "i2c_address": 32,
+                            "hw_filter": "hwmon",
+                            "hw_prefix": "hwmon",
+                            "hw_path": "",
+                            "mod": "max31790",
+                            "compat": "max31790",
+                            "name": "fan",
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaTalondxBspDsTemperature",
+                        "alias" : "temperature",
+                        "devprop" : {
+                            "device_id": 1,
+                            "device_directory": "/sys/bus/i2c/devices/",
+                            "bus_id": 0,
+                            "i2c_address": 64,
+                            "hw_filter": "iio:device",
+                            "hw_prefix": "",
+                            "hw_path": "",
+                            "mod": "si7020",
+                            "compat": "si7020",
+                            "name": "hum",
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaTalondxBspDsMbo",
+                        "alias" : "mbo-rx1",
+                        "devprop" : {
+                            "leap_id": 1,
+                            "leap_type": 1,
+                            "bus_id": 0,
+                            "i2c_address": 70,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaTalondxBspDsMbo",
+                        "alias" : "mbo-rx2",
+                        "devprop" : {
+                            "leap_id": 2,
+                            "leap_type": 1,
+                            "bus_id": 0,
+                            "i2c_address": 68,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaTalondxBspDsMbo",
+                        "alias" : "mbo-tx1",
+                        "devprop" : {
+                            "leap_id": 1,
+                            "leap_type": 0,
+                            "bus_id": 0,
+                            "i2c_address": 86,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaTalondxBspDsMbo",
+                        "alias" : "mbo-tx2",
+                        "devprop" : {
+                            "leap_id": 2,
+                            "leap_type": 0,
+                            "bus_id": 0,
+                            "i2c_address": 84,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaTalondxBspDsEeprom",
+                        "alias" : "eeprom",
+                        "devprop" : {
+                            "device_id": 1,
+                            "device_directory": "/sys/bus/i2c/devices/",
+                            "bus_id": 0,
+                            "i2c_address": 80,
+                            "hw_filter": "",
+                            "hw_prefix": "",
+                            "hw_path": "",
+                            "mod": "at24",
+                            "compat": "at24",
+                            "name": "eeprom",
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaTalondxBspDsLtm",
+                        "alias" : "ltm-1",
+                        "devprop" : {
+                            "ltm_id": 0,
+                            "device_directory": "/home/root/temp/",
+                            "bus_id": 1,
+                            "i2c_address": 64,
+                            "hw_filter": "hwmon",
+                            "hw_prefix": "hwmon",
+                            "hw_path": "",
+                            "mod": "pmbus",
+                            "compat": "pmbus",
+                            "name": "ltm",
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaTalondxBspDsLtm",
+                        "alias" : "ltm-2",
+                        "devprop" : {
+                            "ltm_id": 0,
+                            "device_directory": "/home/root/temp/",
+                            "bus_id": 1,
+                            "i2c_address": 65,
+                            "hw_filter": "hwmon",
+                            "hw_prefix": "hwmon",
+                            "hw_path": "",
+                            "mod": "pmbus",
+                            "compat": "pmbus",
+                            "name": "ltm",
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaTalondxBspDsLtm",
+                        "alias" : "ltm-11",
+                        "devprop" : {
+                            "ltm_id": 0,
+                            "device_directory": "/home/root/temp/",
+                            "bus_id": 1,
+                            "i2c_address": 74,
+                            "hw_filter": "hwmon",
+                            "hw_prefix": "hwmon",
+                            "hw_path": "",
+                            "mod": "pmbus",
+                            "compat": "pmbus",
+                            "name": "ltm",
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class" : "SkaTalondxBspDsLtm",
+                        "alias" : "ltm-12",
+                        "devprop" : {
+                            "ltm_id": 0,
+                            "device_directory": "/home/root/temp/",
+                            "bus_id": 1,
+                            "i2c_address": 75,
+                            "hw_filter": "hwmon",
+                            "hw_prefix": "hwmon",
+                            "hw_path": "",
+                            "mod": "pmbus",
+                            "compat": "pmbus",
+                            "name": "ltm",
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout", 
+                                "device::ska002/lmc/dish_logger"
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
