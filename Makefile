@@ -246,19 +246,19 @@ config-db: config-spfrx-tango-host ## Configure the database
 	--network host \
 	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --config-db $(ARGS)
+	artefact.skao.int/$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --config-db $(ARGS)
 
 generate-spfrx-config: ## Generate spfrx-config.json file
 	@docker run --rm \
 	--network host \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --generate-spfrx-config $(ARGS)
+	artefact.skao.int/$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --generate-spfrx-config $(ARGS)
 
 download-artifacts:  ## Download artifacts from CAR 
 	mkdir -p $(SPFRX_LOCAL_DIR)
 	@docker run --rm \
 	--volume $(SPFRX_LOCAL_DIR):/app/images/$(strip $(OCI_IMAGE))-deploy/artifacts:rw \
-	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --download-artifacts $(ARGS)
+	artefact.skao.int/$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py --download-artifacts $(ARGS)
 
 talon-version: config-spfrx-tango-host ## Display SPFRx TANGO device server version information
 	@docker run --rm \
