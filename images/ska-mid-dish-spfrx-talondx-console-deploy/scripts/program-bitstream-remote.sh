@@ -27,6 +27,6 @@ dtb=`tar --wildcards --get -vf $archive *.dtb`
 scp $bs_core $dtb root@$board:/lib/firmware
 ssh root@$board -n "rmdir $path/*; mkdir $path/$name" # trigger removal of old device tree, the setup next image.
 ssh root@$board -n "cd /lib/firmware && echo $dtb > $path/$name/path"
-ssh root@$board -n "dmesg | tail -n 3"
+ssh root@$board -n "dmesg | tail -n 10"
 rm $bs_core $dtb
 

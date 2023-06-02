@@ -14,7 +14,9 @@ import os
 import re
 
 from tango import Database, DbDevInfo
+from time import sleep
 
+DEFAULT_SLEEP_TIME : float = 0.01
 
 class DbPopulate:
     # id is the unique ID for a given Talon-DX board. This string becomes
@@ -30,11 +32,15 @@ class DbPopulate:
 
     json = None
 
+    sleep_time : float
+
     ##
     # Initialize the class module
-    def __init__(self, json):
+    def __init__(self, json, sleep_time : float = DEFAULT_SLEEP_TIME):
         # Store the input JSON file as a dict
         self.json = json
+
+        self.sleep_time = sleep_time
 
         # determine whether we have a default TANGO DB specified in the
         # environment variables. If not specified, exit.
@@ -146,6 +152,7 @@ class DbPopulate:
                 f"  Installing device {name} under {className}",
             )
             self.db.add_device(device_info)
+            sleep(self.sleep_time)
         except Exception as e:
             self.printStatus(
                 "addDevice",
@@ -162,6 +169,7 @@ class DbPopulate:
                     self.db.put_device_property(
                         name, {property: device["devprop"][property]}
                     )
+                    sleep(self.sleep_time)
             except Exception as e:
                 self.printStatus(
                     "addDevice",
@@ -185,6 +193,7 @@ class DbPopulate:
         if self.checkForDevice(className, name):
             self.printStatus("removeDevice", f" Removing device {name}")
             self.db.delete_device(name)
+            sleep(self.sleep_time)
         else:
             self.printStatus(
                 "removeDevice", f" Device {name} not found in DB"

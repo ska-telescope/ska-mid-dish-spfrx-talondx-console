@@ -55,3 +55,5 @@ images/ska-mid-cbf-engineering-console/pip.conf
 automation/*
 
 private*
+
+bitstream

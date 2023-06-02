@@ -198,9 +198,21 @@ spfrx-set-fanspeed: ## Set fan speed settings for RXPU
 # Call the images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/program-bitstream-remote script
 #  This will program the bitstream remotely on the SPFRx TALON-DX HPS
 spfrx-program-bitstream: ## Remotely configure the SPFRx FPGA
-	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/program-bitstream-remote.sh ${TAR_ARCHIVE} ${SPFRX_ADDRESS}
+	@. images/ska-mid-dish-spfrx-talondx-console-deploy/scripts/program-bitstream-remote.sh ${ARCHIVE_FILE} ${SPFRX_ADDRESS}
 
 ARTIFACTS_POD = $(shell kubectl -n $(KUBE_NAMESPACE) get pod --no-headers --selector=vol=artifacts-admin -o custom-columns=':metadata.name')
+
+get-namespaces: ## Display kubectl namespaces on local server
+	@kubectl get namespaces
+
+get-svc: ## Display kubectl namespace addresses on local server
+	@kubectl get svc -n ${KUBE_NAMESPACE}
+
+display-spfrx-database-pod: ## Display the derived SPFRX_DATABASE_POD environment variable
+	@echo "SPFRX_DATABASE_POD = ${SPFRX_DATABASE_POD}"
+
+display-spfrx-tango-host: ## Display the SPFRX_TANGO_HOST value
+	@echo "SPFRX_TANGO_HOST = ${SPFRX_TANGO_HOST}"
 
 x-jive: config-spfrx-tango-host ## Run Jive with X11
 	@chmod 644 $(HOME)/.Xauthority
