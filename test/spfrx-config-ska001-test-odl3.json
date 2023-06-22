@@ -1,0 +1,49 @@
+{
+    "ds_binaries": [],
+    "tango_db": {
+        "db_servers": [
+            {
+                "server": "ska-mid-spfrx-odl-3-ds",
+                "instance": "spfrx-test",
+                "name": "spfrxpu-test",
+                "device": "ska001",
+                "deviceList": [
+                    {
+                        "class": "SkaMidSpfrxOdl3Ds",
+                        "alias": "odl-3",
+                        "devprop": {
+                              "instance_id": 1,
+                              "tlk_rx_ctrl_filename": "/dev/mem",
+                              "tlk_rx_ctrl_bridge_offset": 4177526784,
+                              "tlk_rx_ctrl_firmware_offset": 224,
+                              "tlk_rst_status_filename": "/dev/mem",
+                              "tlk_rst_status_bridge_offset": 4177526784,
+                              "tlk_rst_status_firmware_offset": 128,
+                              "tlk_tx_ctrl_filename": "/dev/mem",
+                              "tlk_tx_ctrl_bridge_offset": 4177526784,
+                              "tlk_tx_ctrl_firmware_offset": 24,
+                              "intel_spi_adc_filename": "/dev/mem",
+                              "intel_spi_adc_bridge_offset": 4177526784,
+                              "intel_spi_adc_firmware_offset": 352,
+                              "intel_spi_slow_adc_filename": "/dev/mem",
+                              "intel_spi_slow_adc_bridge_offset": 4177526784,
+                              "intel_spi_slow_adc_firmware_offset": 416,
+                              "intel_spi_util_filename": "/dev/mem",
+                              "intel_spi_util_bridge_offset": 4177526784,
+                              "intel_spi_util_firmware_offset": 384,
+                              "intel_i2c_filename": "/dev/mem",
+                              "intel_i2c_bridge_offset": 4177526784,
+                              "intel_i2c_firmware_offset": 832,
+                              "ecp_status": 1,
+                              "LoggingLevelDefault": 4,
+                              "LoggingTargetsDefault": [
+                                    "console::cout",
+                                    "device::ska001/lmc/dish_logger"
+                              ]
+                        }
+                    }
+               ]
+            }
+        ]
+    }
+}

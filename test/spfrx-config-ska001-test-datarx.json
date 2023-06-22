@@ -1,0 +1,57 @@
+{
+    "ds_binaries": [],
+    "tango_db": {
+        "db_servers": [
+            {
+                "server": "ska-mid-spfrx-data-receiver-123-ds",
+                "instance": "spfrx-test",
+                "name": "spfrxpu-test",
+                "device": "ska001",
+                "deviceList": [
+                    {
+                        "class": "SkaMidSpfrxDataReceiver123Ds",
+                        "alias": "datarx123-0",
+                        "devprop": {
+                              "instance_id": 0,
+                              "intel_jesd204_rx_filename": "/dev/mem",
+                              "intel_jesd204_rx_bridge_offset": 4177526784,
+                              "intel_jesd204_rx_firmware_offset": 6144,
+                              "jesd_rst_status_filename": "/dev/mem",
+                              "jesd_rst_status_bridge_offset": 4177526784,
+                              "jesd_rst_status_firmware_offset": 32,
+                              "jesd_rx_ctrl_filename": "/dev/mem",
+                              "jesd_rx_ctrl_bridge_offset": 4177526784,
+                              "jesd_rx_ctrl_firmware_offset": 1280,
+                              "LoggingLevelDefault": 4,
+                              "LoggingTargetsDefault": [
+                                    "console::cout",
+                                    "device::ska001/lmc/dish_logger"
+                              ]
+                        }
+                  },
+                  {
+                        "class": "SkaMidSpfrxDataReceiver123Ds",
+                        "alias": "datarx123-1",
+                        "devprop": {
+                              "instance_id": 1,
+                              "intel_jesd204_rx_filename": "/dev/mem",
+                              "intel_jesd204_rx_bridge_offset": 4177526784,
+                              "intel_jesd204_rx_firmware_offset": 7168,
+                              "jesd_rst_status_filename": "/dev/mem",
+                              "jesd_rst_status_bridge_offset": 4177526784,
+                              "jesd_rst_status_firmware_offset": 48,
+                              "jesd_rx_ctrl_filename": "/dev/mem",
+                              "jesd_rx_ctrl_bridge_offset": 4177526784,
+                              "jesd_rx_ctrl_firmware_offset": 1536,
+                              "LoggingLevelDefault": 4,
+                              "LoggingTargetsDefault": [
+                                    "console::cout",
+                                    "device::ska001/lmc/dish_logger"
+                              ]
+                        }
+                  }
+                ]
+            }
+        ]
+    }
+}

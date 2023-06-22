@@ -1,0 +1,34 @@
+{
+    "tango_db": {
+        "db_servers": [
+             {
+                "server": "ska-mid-spfrx-packet-capture-ds",
+                "instance": "spfrx-test",
+                "name": "spfrxpu-test",
+                "device": "ska001",
+                "deviceList": [
+                    {
+                        "class": "SkaMidSpfrxPacketCaptureDs",
+                        "alias": "pktcap",
+                        "devprop": {
+                            "mem_cap_filename": "/dev/mem",
+                            "mem_cap_bridge_offset": 4177526784,
+                            "mem_cap_firmware_offset": 448,
+                            "mem_cap_hp_data_filename": "/dev/mem",
+                            "mem_cap_hp_data_bridge_offset": 2147483648,
+                            "mem_cap_hp_data_firmware_offset": 0,
+                            "mem_cap_lw_data_filename": "/dev/mem",
+                            "mem_cap_lw_data_bridge_offset": 4177526784,
+                            "mem_cap_lw_data_firmware_offset": 16384,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                "console::cout",
+                                "device::ska001/lmc/dish_logger"
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
