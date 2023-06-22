@@ -244,6 +244,7 @@
                             "spfrx_pwr_mtr_data_filename" : "/dev/mem",
                             "spfrx_pwr_mtr_data_bridge_offset" : 4177526784,
                             "spfrx_pwr_mtr_data_firmware_offset" : 8192,
+                            "spfrx_spectral_sense_inv_value" : 0,
                             "spfrx_polarity_inv_value" : 0,
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
@@ -270,6 +271,7 @@
                             "spfrx_pwr_mtr_data_filename" : "/dev/mem",
                             "spfrx_pwr_mtr_data_bridge_offset" : 4177526784,
                             "spfrx_pwr_mtr_data_firmware_offset" : 12288,
+                            "spfrx_spectral_sense_inv_value" : 0,
                             "spfrx_polarity_inv_value" : 0,
                             "LoggingLevelDefault": 4,
                             "LoggingTargetsDefault": [
