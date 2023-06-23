@@ -222,7 +222,7 @@ x-jive: config-spfrx-tango-host ## Run Jive with X11
 	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
 	--volume /tmp/.X11-unix:/tmp/.X11-unix \
 	--volume $(HOME)/.Xauthority:/home/tango/.Xauthority \
-	artefact.skatelescope.org/ska-tango-images-tango-jive:7.22.5 &
+	artefact.skao.int/ska-tango-images-tango-jive:7.22.5 &
 
 x-pogo:  ## Run POGO with X11
 	@chmod 644 $(HOME)/.Xauthority
@@ -234,13 +234,13 @@ x-pogo:  ## Run POGO with X11
 	--volume $(PWD)/pogo/.pogorc:/home/tango/.pogorc:rw \
 	--volume $(PWD):/home/tango/pogo/:rw \
 	--user tango \
-	artefact.skatelescope.org/ska-tango-images-tango-pogo:9.6.36 &
+	artefact.skao.int/ska-tango-images-tango-pogo:9.6.36 &
 
 run-interactive: config-spfrx-tango-host ## Run docker in interactive mode
 	docker run --rm -it \
 	--network host \
 	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
-    $(strip $(OCI_IMAGE)):$(release) bash
+    artefact.skao.int/$(strip $(OCI_IMAGE)):$(release) bash
 
 run-interactive-X11: config-spfrx-tango-host ## Run docker in interactive mode
 	docker run --rm -it \
@@ -250,7 +250,7 @@ run-interactive-X11: config-spfrx-tango-host ## Run docker in interactive mode
 	--volume /tmp/.X11-unix:/tmp/.X11-unix \
 	--volume $(HOME)/.Xauthority:/home/tango/.Xauthority \
 	--env TANGO_HOST=$(SPFRX_TANGO_HOST) \
-    $(strip $(OCI_IMAGE)):$(release) bash
+    artefact.skao.int/$(strip $(OCI_IMAGE)):$(release) bash
 
 config-db: config-spfrx-tango-host ## Configure the database
 	@echo Configuring Tango DB at $(SPFRX_TANGO_HOST) with Talon device servers...
@@ -276,14 +276,14 @@ talon-version: config-spfrx-tango-host ## Display SPFRx TANGO device server vers
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
-	$(strip $(OCI_IMAGE)):$(release) ./spfrx.py --version_tango_all
+	artefact.skao.int/$(strip $(OCI_IMAGE)):$(release) ./spfrx.py --version_tango_all
 
 talon-status: config-spfrx-tango-host ## Display SPFRx TANGO device server status information
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
 	--env TERM=xterm \
-	$(strip $(OCI_IMAGE)):$(release) ./spfrx.py --status_tango_all
+	artefact.skao.int/$(strip $(OCI_IMAGE)):$(release) ./spfrx.py --status_tango_all
 
 spfrx: config-spfrx-tango-host ## SPFRx HPS Console application
 	@echo $(Arguments) & \
@@ -291,14 +291,14 @@ spfrx: config-spfrx-tango-host ## SPFRx HPS Console application
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
 	--user tango \
-	$(strip $(OCI_IMAGE)):$(release) ./spfrx.py $(ARGS)
+	artefact.skao.int/$(strip $(OCI_IMAGE)):$(release) ./spfrx.py $(ARGS)
 
 spfrx-deploy: config-spfrx-tango-host ## SFPRx HPS Deploy application
 	@docker run --rm \
 	--network host \
 	--env "TANGO_HOST=$(SPFRX_TANGO_HOST)" \
 	--user tango \
-	$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py $(ARGS)
+	artefact.skao.int/$(strip $(OCI_IMAGE))-deploy:$(release) ./spfrx_deployer.py $(ARGS)
 
 spfrx-plotter: config-spfrx-tango-host ## SPFRx Gated Spectrometer GUI application
 	@docker run --rm \
@@ -308,7 +308,7 @@ spfrx-plotter: config-spfrx-tango-host ## SPFRx Gated Spectrometer GUI applicati
 	--volume /tmp/.X11-unix:/tmp/.X11-unix \
 	--volume $(HOME)/.Xauthority:/home/tango/.Xauthority \
 	--user tango \
-	$(strip $(OCI_IMAGE))-plot:$(release) ./spfrx_spectrum_plotter.py $(ARGS)
+	artefact.skao.int/$(strip $(OCI_IMAGE))-plot:$(release) ./spfrx_spectrum_plotter.py $(ARGS)
 
 documentation:  ## Re-generate documentation
 	cd docs && make clean && make html
