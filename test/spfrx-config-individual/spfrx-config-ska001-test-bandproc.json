@@ -1,0 +1,69 @@
+{
+    "ds_binaries": [],
+    "tango_db": {
+        "db_servers": [
+            {
+                "server": "ska-mid-spfrx-band-processor-123-ds",
+                "instance": "spfrx-test",
+                "name": "spfrxpu-test",
+                "device": "ska001",
+                "deviceList": [
+                    {
+                        "class": "SkaMidSpfrxBandProcessor123Ds",
+                        "alias": "bandprocessor123-0",
+                        "devprop": {
+                            "instance_id": 0,
+                            "NominalKValue": 1,
+                            "nd_ctrl_filename": "/dev/mem",
+                            "nd_ctrl_bridge_offset": 4177526784,
+                            "nd_ctrl_firmware_offset": 8,
+                            "spfrx_band123_filename": "/dev/mem",
+                            "spfrx_band123_bridge_offset": 4177526784,
+                            "spfrx_band123_firmware_offset": 896,
+                            "spfrx_ppso_fifo_filename": "/dev/mem",
+                            "spfrx_ppso_fifo_bridge_offset": 4177526784,
+                            "spfrx_ppso_fifo_firmware_offset": 4096,
+                            "spfrx_pwr_mtr_data_filename": "/dev/mem",
+                            "spfrx_pwr_mtr_data_bridge_offset": 4177526784,
+                            "spfrx_pwr_mtr_data_firmware_offset": 8192,
+                            "spfrx_spectral_sense_inv_value" : 0,
+                            "spfrx_polarity_inv_value": 0,
+                            "LoggingLevelDefault": 4,
+                            "LoggingTargetsDefault": [
+                                    "console::cout",
+                                    "device::ska001/lmc/dish_logger"
+                            ]
+                        }
+                    },
+                    {
+                        "class": "SkaMidSpfrxBandProcessor123Ds",
+                        "alias": "bandprocessor123-1",
+                        "devprop": {
+                              "instance_id": 1,
+                              "NominalKValue": 1,
+                              "nd_ctrl_filename": "/dev/mem",
+                              "nd_ctrl_bridge_offset": 4177526784,
+                              "nd_ctrl_firmware_offset": 8,
+                              "spfrx_band123_filename": "/dev/mem",
+                              "spfrx_band123_bridge_offset": 4177526784,
+                              "spfrx_band123_firmware_offset": 1024,
+                              "spfrx_ppso_fifo_filename": "/dev/mem",
+                              "spfrx_ppso_fifo_bridge_offset": 4177526784,
+                              "spfrx_ppso_fifo_firmware_offset": 5120,
+                              "spfrx_pwr_mtr_data_filename": "/dev/mem",
+                              "spfrx_pwr_mtr_data_bridge_offset": 4177526784,
+                              "spfrx_pwr_mtr_data_firmware_offset": 12288,
+                              "spfrx_spectral_sense_inv_value" : 0,
+                              "spfrx_polarity_inv_value": 0,
+                              "LoggingLevelDefault": 4,
+                              "LoggingTargetsDefault": [
+                                    "console::cout",
+                                    "device::ska001/lmc/dish_logger"
+                              ]
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
